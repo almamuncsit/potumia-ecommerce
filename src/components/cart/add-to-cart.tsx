@@ -1,10 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { LABELS } from "@/lib/brand";
 import { BagIcon, MinusIcon, PlusIcon } from "../icons";
-import { addToBag, useCart, type CartLine } from "./cart-store";
+import { cart, useCart, type CartLine } from "./cart-store";
 
 type Props = Omit<CartLine, "quantity"> & { inStock: boolean };
 
@@ -34,22 +34,12 @@ export function QuantityStepper({ value, max, onChange, label }: { value: number
   );
 }
 
-export function AddToCart({ inStock, priceLabel, ...line }: Props & { priceLabel?: string }) {
+export function AddToCart({ inStock, ...line }: Props) {
   const { lines } = useCart();
   const [quantity, setQuantity] = useState(1);
-  const [showBar, setShowBar] = useState(false);
-  const boxRef = useRef<HTMLDivElement>(null);
+  const [added, setAdded] = useState(false);
   const inCart = lines.find((l) => l.product_id === line.product_id)?.quantity ?? 0;
   const max = Math.max(0, Math.floor(line.max) - inCart);
-
-  // On phones, keep "Add to bag" reachable: a bar slides up once the main button scrolls away
-  useEffect(() => {
-    const box = boxRef.current;
-    if (!box || !inStock) return;
-    const observer = new IntersectionObserver(([entry]) => setShowBar(!entry.isIntersecting && entry.boundingClientRect.top < 0));
-    observer.observe(box);
-    return () => observer.disconnect();
-  }, [inStock]);
 
   if (!inStock) {
     return (
@@ -62,38 +52,33 @@ export function AddToCart({ inStock, priceLabel, ...line }: Props & { priceLabel
     );
   }
 
-  const add = (qty: number) => {
-    addToBag(line, Math.min(qty, max));
-    setQuantity(1);
-  };
-
   return (
-    <>
-      <div ref={boxRef} className="flex gap-3">
+    <div className="space-y-4">
+      <div className="flex gap-3">
         <QuantityStepper value={Math.min(quantity, Math.max(1, max))} max={max} onChange={setQuantity} label={line.name} />
-        <button type="button" className="btn btn-primary h-12 flex-1" disabled={max < 1} onClick={() => add(quantity)}>
+        <button
+          type="button"
+          className="btn btn-primary h-12 flex-1"
+          disabled={max < 1}
+          onClick={() => {
+            cart.add(line, Math.min(quantity, max));
+            setQuantity(1);
+            setAdded(true);
+          }}
+        >
           <BagIcon className="h-4 w-4" />
           {max < 1 ? "All in your bag" : "Add to bag"}
         </button>
       </div>
-
-      <div
-        aria-hidden={!showBar}
-        inert={!showBar}
-        className={`fixed inset-x-0 bottom-0 z-30 border-t border-line bg-bg/95 px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3 shadow-[0_-12px_30px_-18px_rgb(0_0_0/0.3)] backdrop-blur transition-transform duration-300 lg:hidden ${
-          showBar ? "translate-y-0" : "translate-y-full"
-        }`}
-      >
-        <div className="flex items-center gap-3">
-          <div className="min-w-0 flex-1">
-            <p className="line-clamp-1 text-sm font-medium">{line.name}</p>
-            {priceLabel && <p className="text-sm font-semibold text-accent-strong">{priceLabel}</p>}
-          </div>
-          <button type="button" className="btn btn-primary shrink-0" disabled={max < 1} onClick={() => add(1)}>
-            <BagIcon className="h-4 w-4" /> {max < 1 ? "In your bag" : "Add to bag"}
-          </button>
-        </div>
-      </div>
-    </>
+      <p aria-live="polite" className="min-h-6 text-sm">
+        {added && (
+          <span className="inline-flex items-center gap-3 rounded-full bg-brand-soft px-4 py-1.5">
+            Added to your bag
+            <Link href="/cart" className="font-medium text-accent-strong underline underline-offset-2">View bag</Link>
+            <Link href="/checkout" className="font-medium text-accent-strong underline underline-offset-2">Checkout</Link>
+          </span>
+        )}
+      </p>
+    </div>
   );
 }

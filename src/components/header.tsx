@@ -57,7 +57,7 @@ export async function Header() {
         <div className="container-x flex h-16 items-center gap-2 lg:h-20">
           <div className="flex flex-1 items-center gap-1 lg:hidden">
             <MobileMenu links={NAV} categories={categoryLinks} help={HELP} />
-            <SearchButton categories={categoryLinks} />
+            <SearchButton />
           </div>
 
           <Link href="/" aria-label={`${BRAND.name} home`} className="shrink-0">
@@ -104,7 +104,7 @@ export async function Header() {
           </nav>
 
           <div className="flex flex-1 items-center justify-end gap-1 lg:flex-none">
-            <span className="hidden lg:block"><SearchButton categories={categoryLinks} /></span>
+            <span className="hidden lg:block"><SearchButton /></span>
             <Suspense fallback={<span className="hidden h-10 w-10 sm:block" aria-hidden="true" />}>
               <AccountLink />
             </Suspense>

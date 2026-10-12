@@ -20,9 +20,7 @@ export async function getHome(): Promise<Home> {
   "use cache";
   cacheLife("catalog");
   cacheTag("products", "categories");
-  const data = (await api<{ data: Partial<Home> }>("/home")).data;
-  // Defaults keep the page working if the API is older than the store (or a cached reply is)
-  return { best_sellers: [], new_arrivals: [], deals: [], categories: [], ...data };
+  return (await api<{ data: Home }>("/home")).data;
 }
 
 export async function getProducts(filters: ProductFilters = {}): Promise<ProductPage> {

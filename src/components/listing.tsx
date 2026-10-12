@@ -32,7 +32,6 @@ export function parseFilters(sp: SearchParams): ProductFilters {
     min_price: num(sp.min_price),
     max_price: num(sp.max_price),
     in_stock: one(sp.in_stock) === "1" || undefined,
-    on_sale: one(sp.on_sale) === "1" || undefined,
     sort: SORTS.some(([key]) => key === sort) ? (sort as ProductFilters["sort"]) : undefined,
     page: num(sp.page),
   };
@@ -40,7 +39,7 @@ export function parseFilters(sp: SearchParams): ProductFilters {
 
 /** Any filter beyond plain paging makes a page we keep out of search indexes */
 export const isFiltered = (f: ProductFilters) =>
-  Boolean(f.q || f.category || f.brand || f.min_price || f.max_price || f.in_stock || f.on_sale || f.sort);
+  Boolean(f.q || f.category || f.brand || f.min_price || f.max_price || f.in_stock || f.sort);
 
 function toQuery(filters: ProductFilters, fixed: ProductFilters = {}) {
   const query = new URLSearchParams();
@@ -99,10 +98,6 @@ function FilterForm({ filters, basePath, categories, brands, currencySymbol, idP
       <label className="flex cursor-pointer items-center gap-3">
         <input name="in_stock" type="checkbox" value="1" defaultChecked={filters.in_stock} className="h-4 w-4 accent-[var(--accent-strong)]" />
         In stock only
-      </label>
-      <label className="flex cursor-pointer items-center gap-3">
-        <input name="on_sale" type="checkbox" value="1" defaultChecked={filters.on_sale} className="h-4 w-4 accent-[var(--accent-strong)]" />
-        On sale only
       </label>
       <div className="space-y-2">
         <label htmlFor={`${idPrefix}-sort`} className={label}>Sort by</label>

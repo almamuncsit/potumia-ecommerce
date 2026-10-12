@@ -7,8 +7,7 @@ import { CashIcon, ExchangeIcon, PlusIcon, RulerIcon, TruckIcon } from "@/compon
 import { JsonLd } from "@/components/json-ld";
 import { SectionHeading } from "@/components/page-hero";
 import { Price } from "@/components/price";
-import { ProductCard } from "@/components/product-card";
-import { Rail } from "@/components/rail";
+import { ProductGrid } from "@/components/product-card";
 import { StoreImage } from "@/components/store-image";
 import { HAS_SIZE_GUIDE } from "@/content/pages";
 import { BRAND, LABELS } from "@/lib/brand";
@@ -130,7 +129,6 @@ export default async function ProductPage({ params }: PageProps<"/products/[slug
             <span className={`h-2 w-2 rounded-full ${product.in_stock ? (lowStock ? "bg-sale" : "bg-ok") : "bg-muted"}`} />
             {!product.in_stock ? "Sold out" : lowStock ? `Only ${Math.floor(product.stock)} left` : "In stock, ready to ship"}
           </p>
-          {product.sold > 0 && <p className="mt-1.5 text-sm text-muted">{product.sold} sold in the last 90 days</p>}
 
           <div className="mt-6">
             <AddToCart
@@ -141,7 +139,6 @@ export default async function ProductPage({ params }: PageProps<"/products/[slug
               price={product.price}
               max={product.stock}
               inStock={product.in_stock}
-              priceLabel={formatMoney(product.price, store.currency)}
             />
           </div>
 
@@ -214,11 +211,7 @@ export default async function ProductPage({ params }: PageProps<"/products/[slug
       {related.length > 0 && (
         <section aria-labelledby="related-heading" className="container-x pt-24">
           <SectionHeading id="related-heading" eyebrow="You may also like" title={LABELS.related} href={product.category ? categoryPath(product.category) : "/products"} />
-          <Rail label={LABELS.related}>
-            {related.map((p) => (
-              <ProductCard key={p.id} product={p} currency={store.currency} />
-            ))}
-          </Rail>
+          <ProductGrid products={related.slice(0, 4)} currency={store.currency} />
         </section>
       )}
 

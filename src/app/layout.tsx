@@ -1,5 +1,4 @@
 import type { Metadata, Viewport } from "next";
-import { CartDrawer } from "@/components/cart/cart-drawer";
 import { Footer } from "@/components/footer";
 import { Header } from "@/components/header";
 import { JsonLd } from "@/components/json-ld";
@@ -44,12 +43,6 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   themeColor: BRAND.themeColor,
 };
-
-/** The mini cart, with the shop's currency */
-async function MiniCart() {
-  const store = await getStore();
-  return <CartDrawer currency={store.currency} />;
-}
 
 async function SiteStructuredData() {
   const store = await getStore();
@@ -113,7 +106,6 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           {children}
         </main>
         <Footer />
-        <MiniCart />
         <SiteStructuredData />
       </body>
     </html>
