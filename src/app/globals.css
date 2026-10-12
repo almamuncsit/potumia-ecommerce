@@ -1,47 +1,50 @@
 @import "tailwindcss";
 
-/* Colour tokens: light by default, dark when the device asks for it */
+/*
+ * Evoke: warm ivory pages, ink-black sections and brushed gold, taken from
+ * the logo. One light palette on purpose: the brand look stays the same on
+ * every device.
+ */
 :root {
-  --bg: #ffffff;
-  --surface: #f6f6f4;
+  --bg: #fbf9f5;
+  --surface: #f3eee5;
+  --sand: #e9e0cf;
   --card: #ffffff;
-  --text: #1c1c1a;
-  --muted: #66665f;
-  --line: #e4e3df;
-  --brand: #0f6b52;
-  --brand-strong: #0b5843;
-  --brand-soft: #e3f1ec;
+  --text: #16130e;
+  --muted: #6c6457;
+  --line: #e6ddcc;
+  --ink: #0e0d0b;
+  --ink-2: #1c1a16;
+  --on-ink: #f4eedf;
+  --on-ink-muted: #a89f8c;
+  --gold: #c6a25a;
+  --gold-light: #e7cf96;
+  --gold-deep: #8a6a2e;
+  --brand: #8a6a2e;
+  --brand-strong: #6f5422;
+  --brand-soft: #f3ead8;
   --on-brand: #ffffff;
-  --sale: #c2410c;
+  --sale: #a23b22;
   --danger: #b42318;
-  --ok: #067647;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #121211;
-    --surface: #1b1b19;
-    --card: #1f1f1d;
-    --text: #efefea;
-    --muted: #a3a39b;
-    --line: #34342f;
-    --brand: #3fbf96;
-    --brand-strong: #5ccfa9;
-    --brand-soft: #173b30;
-    --on-brand: #0b1f19;
-    --sale: #fb923c;
-    --danger: #f97066;
-    --ok: #47cd89;
-  }
+  --ok: #2f6b3a;
+  color-scheme: light;
 }
 
 @theme inline {
   --color-bg: var(--bg);
   --color-surface: var(--surface);
+  --color-sand: var(--sand);
   --color-card: var(--card);
   --color-text: var(--text);
   --color-muted: var(--muted);
   --color-line: var(--line);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-on-ink: var(--on-ink);
+  --color-on-ink-muted: var(--on-ink-muted);
+  --color-gold: var(--gold);
+  --color-gold-light: var(--gold-light);
+  --color-gold-deep: var(--gold-deep);
   --color-brand: var(--brand);
   --color-brand-strong: var(--brand-strong);
   --color-brand-soft: var(--brand-soft);
@@ -49,11 +52,20 @@
   --color-sale: var(--sale);
   --color-danger: var(--danger);
   --color-ok: var(--ok);
-  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-body), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-serif), ui-serif, Georgia, serif;
+  --animate-fade-up: fade-up 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) both;
 }
 
-html {
-  color-scheme: light dark;
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
 
 body {
@@ -61,15 +73,158 @@ body {
   color: var(--text);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
-/* Product descriptions (HTML from the shop) */
+::selection {
+  background: var(--gold-light);
+  color: var(--ink);
+}
+
+/* Headlines: the serif, a touch tighter */
+.font-display {
+  font-family: var(--font-display);
+  letter-spacing: -0.01em;
+}
+
+/* Small uppercase labels, spaced like the logo's wordmark */
+.eyebrow {
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+}
+
+/* Brushed-gold text */
+.text-gold-gradient {
+  background: linear-gradient(100deg, #8a6a2e 0%, #e7cf96 38%, #c6a25a 58%, #8a6a2e 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.container-x {
+  margin-inline: auto;
+  width: 100%;
+  max-width: 80rem;
+  padding-inline: 1rem;
+}
+@media (min-width: 640px) {
+  .container-x {
+    padding-inline: 1.5rem;
+  }
+}
+@media (min-width: 1024px) {
+  .container-x {
+    padding-inline: 2rem;
+  }
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  border-radius: 999px;
+  padding: 0.8rem 1.6rem;
+  font-weight: 500;
+  font-size: 0.82rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  transition:
+    background-color 0.2s,
+    color 0.2s,
+    border-color 0.2s,
+    box-shadow 0.2s,
+    transform 0.2s;
+}
+.btn-primary {
+  background: var(--ink);
+  color: var(--on-ink);
+}
+.btn-primary:hover {
+  background: var(--gold-deep);
+  color: #fff;
+}
+.btn-gold {
+  background: linear-gradient(110deg, #b8924a, #e7cf96 50%, #c6a25a);
+  color: var(--ink);
+  box-shadow: 0 10px 30px -12px rgb(198 162 90 / 0.7);
+}
+.btn-gold:hover {
+  box-shadow: 0 14px 36px -12px rgb(198 162 90 / 0.9);
+  transform: translateY(-1px);
+}
+.btn-outline {
+  border: 1px solid var(--text);
+  color: var(--text);
+}
+.btn-outline:hover {
+  background: var(--text);
+  color: var(--bg);
+}
+.btn-ghost-light {
+  border: 1px solid rgb(244 238 223 / 0.45);
+  color: var(--on-ink);
+}
+.btn-ghost-light:hover {
+  border-color: var(--gold-light);
+  color: var(--gold-light);
+}
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Underlined text link that grows on hover */
+.link-line {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-size: 0 1px;
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  transition: background-size 0.3s;
+}
+.link-line:hover {
+  background-size: 100% 1px;
+}
+
+/* Form fields */
+.field {
+  width: 100%;
+  border: 1px solid var(--line);
+  background: var(--card);
+  border-radius: 0.6rem;
+  padding: 0.7rem 0.85rem;
+  font-size: 0.95rem;
+  transition: border-color 0.2s;
+}
+.field:hover {
+  border-color: #cdbfa4;
+}
+.field:focus {
+  outline: 2px solid var(--gold);
+  outline-offset: 1px;
+  border-color: transparent;
+}
+
+:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+}
+
+/* Rich text: product descriptions and help pages */
+.prose-store {
+  line-height: 1.8;
+  color: color-mix(in srgb, var(--text) 88%, transparent);
+}
 .prose-store p,
 .prose-store ul,
 .prose-store ol,
 .prose-store table,
 .prose-store blockquote {
-  margin-block: 0.75rem;
+  margin-block: 0.9rem;
 }
 .prose-store ul {
   list-style: disc;
@@ -79,63 +234,70 @@ body {
   list-style: decimal;
   padding-left: 1.25rem;
 }
-.prose-store h2,
+.prose-store li {
+  margin-block: 0.35rem;
+}
+.prose-store li::marker {
+  color: var(--gold);
+}
+.prose-store h2 {
+  font-family: var(--font-display);
+  font-size: 1.65rem;
+  font-weight: 500;
+  color: var(--text);
+  margin-top: 2.25rem;
+}
 .prose-store h3,
 .prose-store h4 {
   font-weight: 600;
-  margin-top: 1.25rem;
+  color: var(--text);
+  margin-top: 1.5rem;
+}
+.prose-store a {
+  color: var(--brand);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.prose-store strong {
+  color: var(--text);
+  font-weight: 600;
+}
+.prose-store table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.92rem;
 }
 .prose-store td,
 .prose-store th {
-  border: 1px solid var(--line);
-  padding: 0.35rem 0.6rem;
-}
-
-.btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  border-radius: 0.6rem;
-  padding: 0.65rem 1.1rem;
-  font-weight: 600;
-  font-size: 0.95rem;
-  transition: background-color 0.15s, opacity 0.15s;
-}
-.btn-primary {
-  background: var(--brand);
-  color: var(--on-brand);
-}
-.btn-primary:hover {
-  background: var(--brand-strong);
-}
-.btn-outline {
-  border: 1px solid var(--line);
-  background: var(--card);
-}
-.btn-outline:hover {
-  border-color: var(--muted);
-}
-.btn:disabled {
-  opacity: 0.55;
-  cursor: not-allowed;
-}
-
-.field {
-  width: 100%;
-  border: 1px solid var(--line);
-  background: var(--card);
-  border-radius: 0.55rem;
+  border-bottom: 1px solid var(--line);
   padding: 0.6rem 0.75rem;
-  font-size: 0.95rem;
+  text-align: left;
 }
-.field:focus {
-  outline: 2px solid var(--brand);
-  outline-offset: 1px;
-  border-color: transparent;
+.prose-store th {
+  font-weight: 600;
+  color: var(--text);
+  background: var(--surface);
 }
 
-:focus-visible {
-  outline: 2px solid var(--brand);
-  outline-offset: 2px;
+/* Native dialogs (search, mobile menu) */
+dialog::backdrop {
+  background: rgb(14 13 11 / 0.55);
+  backdrop-filter: blur(3px);
+}
+
+details > summary {
+  list-style: none;
+  cursor: pointer;
+}
+details > summary::-webkit-details-marker {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
 }

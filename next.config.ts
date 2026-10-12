@@ -8,6 +8,8 @@ const nextConfig: NextConfig = {
   cacheComponents: true,
   partialPrefetching: true,
   poweredByHeader: false,
+  // The dev server is also reached through the Cloudflare tunnel (preview link)
+  allowedDevOrigins: ["store.artofcse.com"],
   images: {
     remotePatterns: [
       {

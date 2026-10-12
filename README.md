@@ -1,6 +1,6 @@
-# Potumia online store
+# Evoke online store
 
-The customer-facing shop for a Potumia shop: browse products, a cart, cash-on-delivery checkout, and customer accounts with order history. It's built with Next.js 16 (App Router, Cache Components) and reads everything from the inventory API (`multipos-api`, endpoints under `/api/ecommerce/store`).
+The online store for **Evoke** (https://evokefashionbd.com), a fashion label in Bangladesh, running on Potumia: browse products, a cart, cash-on-delivery checkout, and customer accounts with order history. It's built with Next.js 16 (App Router, Cache Components) and reads everything from the inventory API (`multipos-api`, endpoints under `/api/ecommerce/store`).
 
 ## Setup
 
@@ -25,6 +25,12 @@ npm run build && npm run start -- -p 3100
 ```
 
 `next build` calls the API to prerender product, category and brand pages, so the API must be reachable while building. Pages refresh in the background every 5 minutes (prices and stock) and every hour (shop name and logo); see `cacheLife` in `next.config.ts`. Checkout always checks live prices and stock with the shop, whatever a cached page showed.
+
+## Brand and content
+
+- **Brand settings:** `src/lib/brand.ts` holds the name, tagline, description, logo files (`public/brand/`) and store policies (payment, delivery times, exchange days, service hours). They appear in the banners, product pages, help pages, structured data and `llms.txt`. **Review the policies before launch.**
+- **Page copy:** `src/content/pages.ts` holds the text for About, Shipping, Returns, Size guide, Privacy and Terms, the FAQ and the size chart. Contact details and currency come from the shop in the inventory app.
+- **Design:** colours and type are tokens in `src/app/globals.css` (ink, ivory, brushed gold; Cormorant Garamond for headlines, Jost for text). Banner artwork is drawn in SVG in `src/components/banners/`, so there are no large banner images to manage.
 
 ## How it fits together
 
