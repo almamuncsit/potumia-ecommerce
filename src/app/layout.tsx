@@ -1,15 +1,14 @@
 import type { Metadata, Viewport } from "next";
-import { Cormorant_Garamond, Jost } from "next/font/google";
 import { Footer } from "@/components/footer";
 import { Header } from "@/components/header";
 import { JsonLd } from "@/components/json-ld";
-import { BRAND } from "@/lib/brand";
+import { BRAND, THEME } from "@/lib/brand";
 import { getStore } from "@/lib/catalog";
 import { absoluteUrl, siteUrl } from "@/lib/urls";
+import { fontVariables } from "@theme/fonts";
 import "./globals.css";
-
-const serif = Cormorant_Garamond({ variable: "--font-serif", subsets: ["latin"], weight: ["400", "500", "600"], display: "swap" });
-const body = Jost({ variable: "--font-body", subsets: ["latin"], display: "swap" });
+// The active theme's colours, fonts and button styles (after the shared styles)
+import "@theme/theme.css";
 
 const title = `${BRAND.name} | ${BRAND.tagline}`;
 
@@ -18,7 +17,7 @@ export const metadata: Metadata = {
   title: { default: title, template: `%s | ${BRAND.name}` },
   description: BRAND.description,
   applicationName: BRAND.name,
-  keywords: ["Evoke", "Evoke fashion", "online shopping Bangladesh", "fashion Bangladesh", "cash on delivery", "clothing online BD"],
+  keywords: BRAND.keywords,
   alternates: {
     canonical: "/",
     // Plain-text summaries of the store for AI assistants
@@ -36,13 +35,13 @@ export const metadata: Metadata = {
   twitter: { card: "summary_large_image", title, description: BRAND.description, images: [BRAND.logo.ogImage.src] },
   robots: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1 },
   icons: {
-    icon: [{ url: "/brand/favicon.ico", sizes: "any" }, { url: "/brand/favicon-64.png", type: "image/png", sizes: "64x64" }],
-    apple: "/brand/apple-touch-icon.png",
+    icon: [{ url: BRAND.logo.favicon, sizes: "any" }, { url: BRAND.logo.favicon64, type: "image/png", sizes: "64x64" }],
+    apple: BRAND.logo.appleTouch,
   },
 };
 
 export const viewport: Viewport = {
-  themeColor: "#0e0d0b",
+  themeColor: BRAND.themeColor,
 };
 
 async function SiteStructuredData() {
@@ -58,7 +57,7 @@ async function SiteStructuredData() {
           name: BRAND.name,
           url: siteUrl,
           description: BRAND.description,
-          logo: absoluteUrl(BRAND.logo.stacked.src),
+          logo: absoluteUrl(BRAND.logo.feature.src),
           image: absoluteUrl(BRAND.logo.ogImage.src),
           email: store.email ?? undefined,
           telephone: store.phone ?? undefined,
@@ -96,8 +95,9 @@ async function SiteStructuredData() {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${serif.variable} ${body.variable}`}>
-      <body className="flex min-h-dvh flex-col">
+    <html lang="en" data-theme={THEME.id} className={fontVariables}>
+      {/* Browser extensions (e.g. Grammarly) add attributes to <body> */}
+      <body className="flex min-h-dvh flex-col" suppressHydrationWarning>
         <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:left-3 focus:top-3 focus:z-50 focus:rounded-full focus:bg-card focus:px-4 focus:py-2">
           Skip to content
         </a>

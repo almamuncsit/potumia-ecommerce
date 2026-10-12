@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useRef } from "react";
-import { BRAND } from "@/lib/brand";
+import { BRAND, LABELS } from "@/lib/brand";
 import { CloseIcon, MenuIcon, SearchIcon } from "./icons";
 
 /** Search in a dialog: a plain GET form to /products, so results are a normal page */
@@ -63,7 +63,7 @@ export function MobileMenu({ links, categories, help }: { links: NavLink[]; cate
       >
         <div className="flex h-full flex-col">
           <div className="flex items-center justify-between border-b border-line px-5 py-4">
-            <Image src={BRAND.logo.horizontal.src} alt={BRAND.name} width={BRAND.logo.horizontal.width} height={BRAND.logo.horizontal.height} className="h-7 w-auto" />
+            <Image src={BRAND.logo.onLight.src} alt={BRAND.name} width={BRAND.logo.onLight.width} height={BRAND.logo.onLight.height} className="h-7 w-auto" />
             <button type="button" onClick={close} aria-label="Close menu" className="grid h-10 w-10 place-items-center rounded-full hover:bg-surface">
               <CloseIcon />
             </button>
@@ -78,7 +78,7 @@ export function MobileMenu({ links, categories, help }: { links: NavLink[]; cate
             </ul>
             {categories.length > 0 && (
               <>
-                <p className="eyebrow mt-8 text-muted">Collections</p>
+                <p className="eyebrow mt-8 text-muted">{LABELS.collections}</p>
                 <ul className="mt-3 space-y-1">
                   {categories.map((c) => (
                     <li key={c.href}>

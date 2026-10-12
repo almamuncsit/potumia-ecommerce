@@ -2,7 +2,8 @@ import "server-only";
 import { cacheLife, cacheTag } from "next/cache";
 import { getBrands, getCategories, getProduct, getProducts, getStore } from "./catalog";
 import { formatMoney } from "./money";
-import { BRAND } from "./brand";
+import { HAS_SIZE_GUIDE } from "@/content/pages";
+import { BRAND, THEME } from "./brand";
 import type { Product, Store } from "./types";
 import { absoluteUrl, brandPath, categoryPath, productPath, siteUrl } from "./urls";
 
@@ -69,18 +70,18 @@ export async function llmsTxt(): Promise<string> {
     "## Pages",
     "",
     `- [All products](${absoluteUrl("/products")}): every product with price and availability`,
-    `- [Collections](${absoluteUrl("/categories")})`,
+    `- [${THEME.labels.collections}](${absoluteUrl("/categories")})`,
     `- [Brands](${absoluteUrl("/brands")})`,
-    `- [About Evoke](${absoluteUrl("/about")}): the brand and its promise`,
+    `- [About ${BRAND.name}](${absoluteUrl("/about")}): the brand and its promise`,
     `- [Shipping & delivery](${absoluteUrl("/shipping")})`,
     `- [Returns & exchange](${absoluteUrl("/returns")})`,
-    `- [Size guide](${absoluteUrl("/size-guide")})`,
+    ...(HAS_SIZE_GUIDE ? [`- [Size guide](${absoluteUrl("/size-guide")})`] : []),
     `- [FAQ](${absoluteUrl("/faq")})`,
     `- [Contact](${absoluteUrl("/contact")})`,
     `- [Full product details](${absoluteUrl("/llms-full.txt")}): this list with descriptions, in one file`,
     "",
     ...(categories.length
-      ? ["## Collections", "", ...categories.map((c) => `- [${line(c.name)}](${absoluteUrl(categoryPath(c))}): ${c.products} ${c.products === 1 ? "product" : "products"}`), ""]
+      ? [`## ${THEME.labels.collections}`, "", ...categories.map((c) => `- [${line(c.name)}](${absoluteUrl(categoryPath(c))}): ${c.products} ${c.products === 1 ? "product" : "products"}`), ""]
       : []),
     ...(brands.length ? ["## Brands", "", ...brands.map((b) => `- [${line(b.name)}](${absoluteUrl(brandPath(b))}): ${b.products} ${b.products === 1 ? "product" : "products"}`), ""] : []),
     "## Products",

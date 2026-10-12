@@ -1,0 +1,88 @@
+/*
+ * Potumia: the look of the Potumia website. White pages with a soft indigo
+ * and sky glow, the indigo → violet gradient of the app, the sky blue of the
+ * logo, slate text, bold tight headlines and pill buttons.
+ */
+:root {
+  color-scheme: light;
+
+  /* Colours (indigo brand, sky accent, slate neutrals) */
+  --bg: #ffffff;
+  --surface: #f8fafc;
+  --sand: #eef2ff;
+  --card: #ffffff;
+  --text: #0f172a;
+  --muted: #64748b;
+  --line: #e2e8f0;
+  --ink: #0f172a;
+  --ink-2: #1e293b;
+  --on-ink: #ffffff;
+  --on-ink-muted: #c7d2fe;
+  --accent: #6366f1;
+  --accent-light: #a5b4fc;
+  --accent-strong: #4f46e5;
+  --brand: #4f46e5;
+  --brand-strong: #4338ca;
+  --brand-soft: #eef2ff;
+  --on-brand: #ffffff;
+  --sale: #e11d48;
+  --danger: #dc2626;
+  --ok: #059669;
+  --selection: #c7d2fe;
+
+  /* Surfaces */
+  --accent-gradient: linear-gradient(120deg, #4f46e5, #7c3aed 55%, #1fb3e8);
+  --ink-glow: linear-gradient(125deg, #4f46e5 0%, #5b3fe0 45%, #7c3aed 100%);
+  --soft-glow:
+    radial-gradient(60% 55% at 88% 8%, rgb(124 58 237 / 0.14), transparent 70%),
+    radial-gradient(50% 50% at 4% 35%, rgb(72 199 244 / 0.16), transparent 70%),
+    linear-gradient(180deg, #f8faff, #ffffff);
+  --placeholder: linear-gradient(140deg, #eef2ff, #f5f3ff 55%, #e0f2fe);
+
+  /* Type */
+  --display-weight: 800;
+  --display-tracking: -0.025em;
+  --eyebrow-size: 0.75rem;
+  --eyebrow-weight: 700;
+  --eyebrow-tracking: 0.08em;
+  --nav-size: 0.95rem;
+  --nav-weight: 500;
+  --nav-tracking: 0;
+  --nav-case: none;
+
+  /* Buttons */
+  --btn-size: 0.9375rem;
+  --btn-weight: 600;
+  --btn-tracking: 0;
+  --btn-case: none;
+  --btn-primary-bg: linear-gradient(135deg, #4f46e5, #7c3aed);
+  --btn-primary-bg-hover: linear-gradient(135deg, #4338ca, #6d28d9);
+  --btn-primary-fg: #ffffff;
+  --btn-primary-shadow: 0 10px 24px -10px rgb(79 70 229 / 0.7);
+  --btn-accent-bg: #ffffff;
+  --btn-accent-fg: #4338ca;
+  --btn-accent-shadow: 0 10px 24px -12px rgb(15 23 42 / 0.35);
+  --btn-accent-shadow-hover: 0 14px 30px -12px rgb(15 23 42 / 0.45);
+  --btn-outline-bg: #ffffff;
+  --btn-outline-border: #e2e8f0;
+  --btn-outline-hover-bg: #ffffff;
+  --btn-outline-hover-border: #a5b4fc;
+  --btn-outline-hover-fg: #4338ca;
+}
+
+/* Headlines in slate ink, body copy a touch softer, like the Potumia site */
+body {
+  color: #334155;
+}
+
+/* Bold headlines sit a little tighter */
+.font-display {
+  line-height: 1.12;
+}
+
+/* On the indigo → violet sections, highlighted words use a light gradient */
+.surface-ink .text-accent-gradient {
+  background: linear-gradient(110deg, #bae6fd, #e0e7ff 60%, #ffffff);
+  -webkit-background-clip: text;
+  background-clip: text;
+}

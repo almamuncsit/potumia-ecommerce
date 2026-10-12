@@ -24,7 +24,7 @@ async function OrderDetails({ params }: { params: Promise<{ number: string }> })
   return (
     <div className="space-y-6">
       <header className="flex flex-wrap items-center gap-3 border-b border-line pb-8">
-        <p className="eyebrow w-full text-gold-deep">Order details</p>
+        <p className="eyebrow w-full text-accent-strong">Order details</p>
         <h1 className="font-display text-4xl font-medium sm:text-5xl">Order #{order.number}</h1>
         <span className={`rounded-full px-2.5 py-0.5 text-sm font-medium ${status.tone}`}>{status.label}</span>
         <p className="w-full text-sm text-muted">Placed on {dateFormat.format(new Date(order.date))}</p>

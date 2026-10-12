@@ -19,7 +19,9 @@
       }
     ],
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      // Types come from the reference theme; the build points @theme at NEXT_PUBLIC_THEME (next.config.ts)
+      "@theme/*": ["./src/themes/evoke/*"]
     }
   },
   "include": [

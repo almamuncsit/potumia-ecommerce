@@ -35,7 +35,7 @@ export default function FaqPage() {
                   <details key={faq.q} className="group py-5">
                     <summary className="flex items-center justify-between gap-6 text-[1.02rem] font-medium">
                       <h3>{faq.q}</h3>
-                      <PlusIcon className="h-4 w-4 shrink-0 text-gold-deep transition group-open:rotate-45" />
+                      <PlusIcon className="h-4 w-4 shrink-0 text-accent-strong transition group-open:rotate-45" />
                     </summary>
                     <p className="mt-3 leading-relaxed text-muted">{faq.a}</p>
                   </details>

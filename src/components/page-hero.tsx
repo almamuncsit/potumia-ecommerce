@@ -1,8 +1,12 @@
 import Link from "next/link";
-import { GoldRings, Lattice } from "./banners/art";
+import { THEME } from "@/lib/brand";
+import { ArtPattern, ArtRings } from "./banners/art";
 import { Breadcrumbs, type Crumb } from "./breadcrumbs";
 
-/** The dark banner at the top of listing and help pages (holds the page's h1) */
+/**
+ * The banner at the top of listing and help pages (holds the page's h1):
+ * dark or soft-tinted, depending on the theme (THEME.ui.pageHero).
+ */
 export function PageHero({
   title,
   eyebrow,
@@ -18,19 +22,21 @@ export function PageHero({
   art?: "rings" | "lattice";
   children?: React.ReactNode;
 }) {
+  const dark = THEME.ui.pageHero === "dark";
+
   return (
-    <section className="relative isolate overflow-hidden bg-[radial-gradient(110%_140%_at_85%_30%,#2a2419_0%,#0e0d0b_62%)] text-on-ink">
+    <section className={`relative isolate overflow-hidden ${dark ? "surface-ink" : "surface-soft border-b border-line"}`}>
       {art === "rings" ? (
-        <GoldRings id="page-hero" className="absolute -right-20 top-1/2 -z-10 h-[170%] w-auto -translate-y-1/2 opacity-70" />
+        <ArtRings id="page-hero" className="absolute -right-20 top-1/2 -z-10 h-[170%] w-auto -translate-y-1/2 opacity-70" />
       ) : (
-        <Lattice id="page-hero" className="absolute inset-0 -z-10 h-full w-full opacity-80" />
+        <ArtPattern id="page-hero" className="absolute inset-0 -z-10 h-full w-full opacity-80" />
       )}
       <div className="container-x py-12 sm:py-16 lg:py-20">
-        <Breadcrumbs items={crumbs} tone="dark" />
+        <Breadcrumbs items={crumbs} tone={dark ? "dark" : "light"} />
         <div className="mt-8 max-w-2xl animate-fade-up">
-          {eyebrow && <p className="eyebrow text-gold-light">{eyebrow}</p>}
-          <h1 className="font-display mt-3 text-4xl font-medium leading-tight sm:text-5xl lg:text-6xl">{title}</h1>
-          {description && <p className="mt-4 text-base leading-relaxed text-on-ink-muted sm:text-lg">{description}</p>}
+          {eyebrow && <p className={`eyebrow ${dark ? "text-accent-light" : "text-accent-strong"}`}>{eyebrow}</p>}
+          <h1 className="font-display mt-3 text-4xl leading-tight sm:text-5xl lg:text-6xl">{title}</h1>
+          {description && <p className={`mt-4 text-base leading-relaxed sm:text-lg ${dark ? "text-on-ink-muted" : "text-muted"}`}>{description}</p>}
           {children}
         </div>
       </div>
@@ -42,8 +48,8 @@ export function PageHero({
 export function PageTitle({ title, eyebrow, children }: { title: string; eyebrow?: string; children?: React.ReactNode }) {
   return (
     <header className="border-b border-line pb-8">
-      {eyebrow && <p className="eyebrow text-gold-deep">{eyebrow}</p>}
-      <h1 className="font-display mt-2 text-4xl font-medium sm:text-5xl">{title}</h1>
+      {eyebrow && <p className="eyebrow text-accent-strong">{eyebrow}</p>}
+      <h1 className="font-display mt-2 text-4xl sm:text-5xl">{title}</h1>
       {children}
     </header>
   );
@@ -54,8 +60,8 @@ export function SectionHeading({ eyebrow, title, href, linkLabel = "View all", i
   return (
     <div className="mb-8 flex items-end justify-between gap-6 sm:mb-10">
       <div>
-        {eyebrow && <p className="eyebrow text-gold-deep">{eyebrow}</p>}
-        <h2 id={id} className="font-display mt-2 text-3xl font-medium sm:text-4xl">{title}</h2>
+        {eyebrow && <p className="eyebrow text-accent-strong">{eyebrow}</p>}
+        <h2 id={id} className="font-display mt-2 text-3xl sm:text-4xl">{title}</h2>
       </div>
       {href && (
         <Link href={href} className="link-line shrink-0 pb-1 text-[0.75rem] font-medium uppercase tracking-[0.18em]">

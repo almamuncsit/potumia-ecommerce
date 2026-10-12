@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { LABELS } from "@/lib/brand";
 import { getBrands, getCategories, getProducts, getStore } from "@/lib/catalog";
 import type { Group, ProductFilters } from "@/lib/types";
 import { ChevronDownIcon } from "./icons";
@@ -70,9 +71,9 @@ function FilterForm({ filters, basePath, categories, brands, currencySymbol, idP
       </div>
       {categories.length > 0 && (
         <div className="space-y-2">
-          <label htmlFor={`${idPrefix}-category`} className={label}>Collection</label>
+          <label htmlFor={`${idPrefix}-category`} className={label}>{LABELS.collection}</label>
           <select id={`${idPrefix}-category`} name="category" defaultValue={filters.category ?? ""} className="field">
-            <option value="">All collections</option>
+            <option value="">All {LABELS.collections.toLowerCase()}</option>
             {categories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
           </select>
         </div>
@@ -95,7 +96,7 @@ function FilterForm({ filters, basePath, categories, brands, currencySymbol, idP
         </div>
       </fieldset>
       <label className="flex cursor-pointer items-center gap-3">
-        <input name="in_stock" type="checkbox" value="1" defaultChecked={filters.in_stock} className="h-4 w-4 accent-[var(--gold-deep)]" />
+        <input name="in_stock" type="checkbox" value="1" defaultChecked={filters.in_stock} className="h-4 w-4 accent-[var(--accent-strong)]" />
         In stock only
       </label>
       <div className="space-y-2">
@@ -142,7 +143,7 @@ export async function Listing({ filters, basePath, fixed = {} }: { filters: Prod
       <section aria-label="Products">
         <div className="mb-8 flex flex-wrap items-center justify-between gap-4 border-b border-line pb-4">
           <p className="text-sm text-muted" role="status">
-            <span className="font-medium text-text">{results.meta.total}</span> {results.meta.total === 1 ? "piece" : "pieces"}
+            <span className="font-medium text-text">{results.meta.total}</span> {results.meta.total === 1 ? LABELS.item : LABELS.items}
             {filters.q ? <> for “<span className="text-text">{filters.q}</span>”</> : null}
           </p>
           <p className="hidden text-sm text-muted lg:block">Sorted by {sortLabel?.toLowerCase()}</p>
@@ -162,7 +163,7 @@ export async function Listing({ filters, basePath, fixed = {} }: { filters: Prod
           <div className="rounded-3xl border border-dashed border-line px-6 py-16 text-center">
             <p className="font-display text-3xl">Nothing matches, yet</p>
             <p className="mt-2 text-muted">Try another search, or clear the filters to see everything.</p>
-            <Link href={basePath} className="btn btn-primary mt-6">See all pieces</Link>
+            <Link href={basePath} className="btn btn-primary mt-6">See all {LABELS.items}</Link>
           </div>
         )}
         <Pagination meta={results.meta} href={pageHref} />

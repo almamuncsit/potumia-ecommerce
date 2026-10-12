@@ -2,15 +2,15 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import { isFiltered, Listing, ListingSkeleton, parseFilters, type SearchParams } from "@/components/listing";
 import { PageHero } from "@/components/page-hero";
-import { BRAND } from "@/lib/brand";
+import { BRAND, LABELS } from "@/lib/brand";
 
 export async function generateMetadata({ searchParams }: PageProps<"/products">): Promise<Metadata> {
   const filters = parseFilters(await searchParams);
   const page = filters.page && filters.page > 1 ? filters.page : undefined;
 
   return {
-    title: filters.q ? `Search: ${filters.q}` : page ? `Shop All – Page ${page}` : "Shop All Clothing Online",
-    description: `Browse the full ${BRAND.name} collection online: prices, sizes and stock, with cash on delivery across Bangladesh.`,
+    title: filters.q ? `Search: ${filters.q}` : page ? `Shop All – Page ${page}` : LABELS.catalogTitle,
+    description: `Browse everything at ${BRAND.name} online: prices and stock, with cash on delivery across ${BRAND.country}.`,
     // One canonical URL per page of the full list; searches and filtered
     // views stay out of search indexes (thin / duplicate pages) but their
     // links are still followed
@@ -28,8 +28,8 @@ export default function ProductsPage({ searchParams }: PageProps<"/products">) {
     <>
       <PageHero
         title="Shop all"
-        eyebrow="The collection"
-        description="Every Evoke piece in one place. Refine by collection, price or availability."
+        eyebrow={`Shop ${BRAND.name}`}
+        description={`Every ${LABELS.item} in one place. Refine by ${LABELS.collection.toLowerCase()}, price or availability.`}
         crumbs={[{ name: "Shop all", href: "/products" }]}
       />
       <div className="container-x py-12 lg:py-16">

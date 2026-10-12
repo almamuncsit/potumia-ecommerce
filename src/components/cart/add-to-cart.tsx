@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { LABELS } from "@/lib/brand";
 import { BagIcon, MinusIcon, PlusIcon } from "../icons";
 import { cart, useCart, type CartLine } from "./cart-store";
 
@@ -45,7 +46,7 @@ export function AddToCart({ inStock, ...line }: Props) {
       <div className="rounded-2xl bg-surface p-5">
         <p className="font-medium">Sold out</p>
         <p className="mt-1 text-sm text-muted">
-          This piece is currently unavailable. <Link href="/contact" className="text-gold-deep underline">Ask us</Link> about restocks.
+          This {LABELS.item} is currently unavailable. <Link href="/contact" className="text-accent-strong underline">Ask us</Link> about restocks.
         </p>
       </div>
     );
@@ -73,8 +74,8 @@ export function AddToCart({ inStock, ...line }: Props) {
         {added && (
           <span className="inline-flex items-center gap-3 rounded-full bg-brand-soft px-4 py-1.5">
             Added to your bag
-            <Link href="/cart" className="font-medium text-gold-deep underline underline-offset-2">View bag</Link>
-            <Link href="/checkout" className="font-medium text-gold-deep underline underline-offset-2">Checkout</Link>
+            <Link href="/cart" className="font-medium text-accent-strong underline underline-offset-2">View bag</Link>
+            <Link href="/checkout" className="font-medium text-accent-strong underline underline-offset-2">Checkout</Link>
           </span>
         )}
       </p>

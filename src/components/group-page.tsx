@@ -5,8 +5,8 @@ import { Suspense } from "react";
 import { getBrand, getCategory } from "@/lib/catalog";
 import type { Group } from "@/lib/types";
 import { brandPath, categoryPath, parseIdSlug } from "@/lib/urls";
-import { BRAND } from "@/lib/brand";
-import { Drape, GoldRings } from "./banners/art";
+import { BRAND, itemCount, LABELS } from "@/lib/brand";
+import { ArtFlow, ArtRings } from "./banners/art";
 import { ArrowRightIcon } from "./icons";
 import { PageHero } from "./page-hero";
 import { isFiltered, Listing, ListingSkeleton, parseFilters, type SearchParams } from "./listing";
@@ -15,7 +15,7 @@ import { isFiltered, Listing, ListingSkeleton, parseFilters, type SearchParams }
 type Kind = "category" | "brand";
 
 const config = {
-  category: { find: getCategory, path: categoryPath, list: "/categories", listName: "Collections" },
+  category: { find: getCategory, path: categoryPath, list: "/categories", listName: LABELS.collections },
   brand: { find: getBrand, path: brandPath, list: "/brands", listName: "Brands" },
 };
 
@@ -61,8 +61,8 @@ export async function GroupPage({ kind, slug, searchParams }: { kind: Kind; slug
     <>
       <PageHero
         title={group.name}
-        eyebrow={kind === "category" ? "Collection" : "Brand"}
-        description={group.description ?? `${group.products ?? ""} ${group.products === 1 ? "piece" : "pieces"} from ${BRAND.name}, with cash on delivery across ${BRAND.country}.`}
+        eyebrow={kind === "category" ? LABELS.collection : "Brand"}
+        description={group.description ?? `${itemCount(group.products)} from ${BRAND.name}, with cash on delivery across ${BRAND.country}.`}
         crumbs={[{ name: listName, href: list }, { name: group.name, href: path(group) }]}
       />
       <div className="container-x py-12 lg:py-16">
@@ -84,7 +84,7 @@ export function GroupIndex({ kind, groups }: { kind: Kind; groups: Group[] }) {
       <PageHero
         title={listName}
         eyebrow="Explore"
-        description={isCategory ? "Browse Evoke by collection and find exactly what you're looking for." : "Shop the brands we carry."}
+        description={isCategory ? `Browse ${BRAND.name} by ${LABELS.collection.toLowerCase()} and find exactly what you're looking for.` : "Shop the brands we carry."}
         crumbs={[{ name: listName, href: config[kind].list }]}
       />
       <div className="container-x py-12 lg:py-16">
@@ -99,15 +99,15 @@ export function GroupIndex({ kind, groups }: { kind: Kind; groups: Group[] }) {
                   }`}
                 >
                   {i % 2 === 0 ? (
-                    <GoldRings id={`idx-${kind}-${group.id}`} className="absolute -bottom-1/2 -right-1/3 h-[130%] w-auto opacity-50 transition duration-700 group-hover:scale-110" />
+                    <ArtRings id={`idx-${kind}-${group.id}`} className="absolute -bottom-1/2 -right-1/3 h-[130%] w-auto opacity-50 transition duration-700 group-hover:scale-110" />
                   ) : (
-                    <Drape id={`idx-${kind}-${group.id}`} className="absolute inset-x-0 bottom-0 h-3/4 w-full opacity-70" />
+                    <ArtFlow id={`idx-${kind}-${group.id}`} className="absolute inset-x-0 bottom-0 h-3/4 w-full opacity-70" />
                   )}
-                  <span className={`font-display relative text-4xl ${i % 2 === 0 ? "text-gold/70" : "text-gold-deep/60"}`}>{String(i + 1).padStart(2, "0")}</span>
+                  <span className={`font-display relative text-4xl ${i % 2 === 0 ? "text-accent/70" : "text-accent-strong/60"}`}>{String(i + 1).padStart(2, "0")}</span>
                   <span className="relative">
                     <span className="font-display block text-2xl font-medium leading-tight">{group.name}</span>
                     <span className="mt-1 flex items-center gap-2 text-xs uppercase tracking-[0.18em] opacity-70">
-                      {group.products} {group.products === 1 ? "piece" : "pieces"} <ArrowRightIcon className="h-3.5 w-3.5 transition group-hover:translate-x-1" />
+                      {itemCount(group.products)} <ArrowRightIcon className="h-3.5 w-3.5 transition group-hover:translate-x-1" />
                     </span>
                   </span>
                 </Link>

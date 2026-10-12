@@ -21,7 +21,7 @@ export function ProductCard({ product, currency, priority = false }: { product: 
           priority={priority}
         />
         <span className="absolute left-3 top-3 flex flex-col items-start gap-1.5">
-          {discount > 0 && <span className="rounded-full bg-ink px-2.5 py-1 text-[0.65rem] font-medium uppercase tracking-[0.14em] text-gold-light">−{discount}%</span>}
+          {discount > 0 && <span className="rounded-full bg-ink px-2.5 py-1 text-[0.65rem] font-medium uppercase tracking-[0.14em] text-accent-light">−{discount}%</span>}
           {!product.in_stock && <span className="rounded-full bg-card/90 px-2.5 py-1 text-[0.65rem] font-medium uppercase tracking-[0.14em] text-text">Sold out</span>}
         </span>
         <span aria-hidden="true" className="absolute inset-x-3 bottom-3 translate-y-3 rounded-full bg-card/95 py-2.5 text-center text-[0.7rem] font-medium uppercase tracking-[0.18em] opacity-0 shadow-lg backdrop-blur transition duration-300 group-hover:translate-y-0 group-hover:opacity-100">
@@ -32,7 +32,7 @@ export function ProductCard({ product, currency, priority = false }: { product: 
         {product.category && <p className="eyebrow text-[0.62rem] text-muted">{product.category.name}</p>}
         <h3 className="line-clamp-2 text-[0.95rem] leading-snug">
           {/* The link covers the whole card, so one link per product */}
-          <Link href={productPath(product)} className="after:absolute after:inset-0 after:rounded-2xl group-hover:text-gold-deep">
+          <Link href={productPath(product)} className="after:absolute after:inset-0 after:rounded-2xl group-hover:text-accent-strong">
             {product.name}
           </Link>
         </h3>

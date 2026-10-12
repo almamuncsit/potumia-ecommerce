@@ -1,6 +1,6 @@
-# Evoke online store
+# Potumia storefront (Evoke, Potumia Shop, …)
 
-The online store for **Evoke** (https://evokefashionbd.com), a fashion label in Bangladesh, running on Potumia: browse products, a cart, cash-on-delivery checkout, and customer accounts with order history. It's built with Next.js 16 (App Router, Cache Components) and reads everything from the inventory API (`multipos-api`, endpoints under `/api/ecommerce/store`).
+The online store for shops on Potumia, with switchable themes: **Evoke** (https://evokefashionbd.com), a fashion label, and **Potumia Shop**, a general store. It offers product browsing, a cart, cash-on-delivery checkout, and customer accounts with order history. It's built with Next.js 16 (App Router, Cache Components) and reads everything from the inventory API (`multipos-api`, endpoints under `/api/ecommerce/store`).
 
 ## Setup
 
@@ -26,11 +26,31 @@ npm run build && npm run start -- -p 3100
 
 `next build` calls the API to prerender product, category and brand pages, so the API must be reachable while building. Pages refresh in the background every 5 minutes (prices and stock) and every hour (shop name and logo); see `cacheLife` in `next.config.ts`. Checkout always checks live prices and stock with the shop, whatever a cached page showed.
 
-## Brand and content
+## Themes
 
-- **Brand settings:** `src/lib/brand.ts` holds the name, tagline, description, logo files (`public/brand/`) and store policies (payment, delivery times, exchange days, service hours). They appear in the banners, product pages, help pages, structured data and `llms.txt`. **Review the policies before launch.**
-- **Page copy:** `src/content/pages.ts` holds the text for About, Shipping, Returns, Size guide, Privacy and Terms, the FAQ and the size chart. Contact details and currency come from the shop in the inventory app.
-- **Design:** colours and type are tokens in `src/app/globals.css` (ink, ivory, brushed gold; Cormorant Garamond for headlines, Jost for text). Banner artwork is drawn in SVG in `src/components/banners/`, so there are no large banner images to manage.
+The store's look, brand and copy come from a **theme**. Pick one in `.env.local`:
+
+```bash
+NEXT_PUBLIC_THEME=evoke     # Evoke: luxury fashion, ink + brushed gold, serif headlines
+NEXT_PUBLIC_THEME=potumia   # Potumia Shop: general store in the Potumia website style
+```
+
+Restart `npm run dev` (or rebuild) after changing it. A misspelled name stops the build and lists the available themes. Only the active theme's fonts, CSS and code are built, so switching themes costs nothing in page weight.
+
+Each theme is a folder in `src/themes/<name>/`:
+
+| File | What it holds |
+| --- | --- |
+| `config.ts` | Brand (name, tagline, description, logos, policies, service hours), wording ("pieces" or "products", "Collections" or "Categories"), and home-page copy |
+| `content.ts` | Help and company pages (About, Shipping, Returns, Privacy, Terms; Size guide only for clothing themes) and the FAQ |
+| `fonts.ts` | Headline and body fonts (`next/font`) |
+| `theme.css` | Colours, gradients, and the look of buttons, labels and headlines (CSS variables) |
+| `art.tsx` | Banner artwork: `ArtRings`, `ArtFlow`, `ArtPattern`, `ArtDivider` |
+| `hero.tsx` | The home-page hero (`Hero`) |
+
+Logos and images live in `public/` (Evoke: `public/brand/`, Potumia: `public/themes/potumia/`). The shared pages and components are in `src/app` and `src/components`; they read the theme through `@/lib/brand` and `@/content/pages`, and the `@theme/*` imports that `next.config.ts` points at the active folder.
+
+**Adding a theme:** copy an existing folder to `src/themes/<new-name>/`, change its files (keep the same exports, which `src/themes/types.ts` checks), add its images under `public/`, and set `NEXT_PUBLIC_THEME=<new-name>`. **Review the policies in `config.ts` before launch**; they appear on the help pages, in banners and in structured data. Contact details and currency always come from the shop in the inventory app.
 
 ## How it fits together
 

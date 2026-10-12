@@ -18,7 +18,7 @@ export function StoreImage({ src, alt, fallback, fallbackClassName = "text-5xl",
     return (
       <span
         aria-hidden="true"
-        className={`absolute inset-0 grid place-items-center bg-[radial-gradient(circle_at_50%_40%,#f6efe2,#e9e0cf)] font-display text-gold-deep/45 ${fallbackClassName}`}
+        className={`absolute inset-0 grid place-items-center placeholder-surface font-display text-accent-strong/45 ${fallbackClassName}`}
       >
         {fallback.trim().slice(0, 1).toUpperCase()}
       </span>

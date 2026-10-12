@@ -1,34 +1,10 @@
 @import "tailwindcss";
 
 /*
- * Evoke: warm ivory pages, ink-black sections and brushed gold, taken from
- * the logo. One light palette on purpose: the brand look stays the same on
- * every device.
+ * Shared styles for every theme. Colours, fonts and the look of buttons,
+ * labels and headlines all come from CSS variables, which the active theme
+ * sets in src/themes/<theme>/theme.css. Nothing here is brand-specific.
  */
-:root {
-  --bg: #fbf9f5;
-  --surface: #f3eee5;
-  --sand: #e9e0cf;
-  --card: #ffffff;
-  --text: #16130e;
-  --muted: #6c6457;
-  --line: #e6ddcc;
-  --ink: #0e0d0b;
-  --ink-2: #1c1a16;
-  --on-ink: #f4eedf;
-  --on-ink-muted: #a89f8c;
-  --gold: #c6a25a;
-  --gold-light: #e7cf96;
-  --gold-deep: #8a6a2e;
-  --brand: #8a6a2e;
-  --brand-strong: #6f5422;
-  --brand-soft: #f3ead8;
-  --on-brand: #ffffff;
-  --sale: #a23b22;
-  --danger: #b42318;
-  --ok: #2f6b3a;
-  color-scheme: light;
-}
 
 @theme inline {
   --color-bg: var(--bg);
@@ -42,9 +18,9 @@
   --color-ink-2: var(--ink-2);
   --color-on-ink: var(--on-ink);
   --color-on-ink-muted: var(--on-ink-muted);
-  --color-gold: var(--gold);
-  --color-gold-light: var(--gold-light);
-  --color-gold-deep: var(--gold-deep);
+  --color-accent: var(--accent);
+  --color-accent-light: var(--accent-light);
+  --color-accent-strong: var(--accent-strong);
   --color-brand: var(--brand);
   --color-brand-strong: var(--brand-strong);
   --color-brand-soft: var(--brand-soft);
@@ -53,7 +29,7 @@
   --color-danger: var(--danger);
   --color-ok: var(--ok);
   --font-sans: var(--font-body), ui-sans-serif, system-ui, sans-serif;
-  --font-display: var(--font-serif), ui-serif, Georgia, serif;
+  --font-display: var(--font-heading), ui-sans-serif, system-ui, sans-serif;
   --animate-fade-up: fade-up 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) both;
 }
 
@@ -77,30 +53,55 @@ body {
 }
 
 ::selection {
-  background: var(--gold-light);
+  background: var(--selection);
   color: var(--ink);
 }
 
-/* Headlines: the serif, a touch tighter */
+/* Headlines */
 .font-display {
   font-family: var(--font-display);
-  letter-spacing: -0.01em;
+  font-weight: var(--display-weight);
+  letter-spacing: var(--display-tracking);
+  text-wrap: balance;
 }
 
-/* Small uppercase labels, spaced like the logo's wordmark */
+/* Small labels above headings */
 .eyebrow {
-  font-size: 0.72rem;
-  font-weight: 500;
-  letter-spacing: 0.28em;
+  font-size: var(--eyebrow-size);
+  font-weight: var(--eyebrow-weight);
+  letter-spacing: var(--eyebrow-tracking);
   text-transform: uppercase;
 }
 
-/* Brushed-gold text */
-.text-gold-gradient {
-  background: linear-gradient(100deg, #8a6a2e 0%, #e7cf96 38%, #c6a25a 58%, #8a6a2e 100%);
+/* Main menu and breadcrumb text */
+.nav-text {
+  font-size: var(--nav-size);
+  font-weight: var(--nav-weight);
+  letter-spacing: var(--nav-tracking);
+  text-transform: var(--nav-case);
+}
+
+.text-accent-gradient {
+  background: var(--accent-gradient);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+}
+
+/* Dark feature sections (story band, promo card, page banners in dark themes) */
+.surface-ink {
+  background: var(--ink-glow);
+  color: var(--on-ink);
+}
+
+/* Soft tinted sections (light hero, light page banners) */
+.surface-soft {
+  background: var(--soft-glow);
+}
+
+/* Stand-in for a missing product photo */
+.placeholder-surface {
+  background: var(--placeholder);
 }
 
 .container-x {
@@ -126,51 +127,59 @@ body {
   align-items: center;
   justify-content: center;
   gap: 0.6rem;
+  min-height: 2.9rem;
   border-radius: 999px;
-  padding: 0.8rem 1.6rem;
-  font-weight: 500;
-  font-size: 0.82rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
+  padding: 0.75rem 1.5rem;
+  font-weight: var(--btn-weight);
+  font-size: var(--btn-size);
+  letter-spacing: var(--btn-tracking);
+  text-transform: var(--btn-case);
+  white-space: nowrap;
   transition:
-    background-color 0.2s,
+    background 0.2s,
     color 0.2s,
     border-color 0.2s,
     box-shadow 0.2s,
     transform 0.2s;
 }
+.btn:active {
+  transform: translateY(1px);
+}
 .btn-primary {
-  background: var(--ink);
-  color: var(--on-ink);
+  background: var(--btn-primary-bg);
+  color: var(--btn-primary-fg);
+  box-shadow: var(--btn-primary-shadow);
 }
 .btn-primary:hover {
-  background: var(--gold-deep);
-  color: #fff;
+  background: var(--btn-primary-bg-hover);
+  color: var(--btn-primary-fg);
 }
-.btn-gold {
-  background: linear-gradient(110deg, #b8924a, #e7cf96 50%, #c6a25a);
-  color: var(--ink);
-  box-shadow: 0 10px 30px -12px rgb(198 162 90 / 0.7);
+.btn-accent {
+  background: var(--btn-accent-bg);
+  color: var(--btn-accent-fg);
+  box-shadow: var(--btn-accent-shadow);
 }
-.btn-gold:hover {
-  box-shadow: 0 14px 36px -12px rgb(198 162 90 / 0.9);
+.btn-accent:hover {
+  box-shadow: var(--btn-accent-shadow-hover);
   transform: translateY(-1px);
 }
 .btn-outline {
-  border: 1px solid var(--text);
+  background: var(--btn-outline-bg);
+  box-shadow: inset 0 0 0 1px var(--btn-outline-border);
   color: var(--text);
 }
 .btn-outline:hover {
-  background: var(--text);
-  color: var(--bg);
+  background: var(--btn-outline-hover-bg);
+  box-shadow: inset 0 0 0 1px var(--btn-outline-hover-border);
+  color: var(--btn-outline-hover-fg);
 }
 .btn-ghost-light {
-  border: 1px solid rgb(244 238 223 / 0.45);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--on-ink) 45%, transparent);
   color: var(--on-ink);
 }
 .btn-ghost-light:hover {
-  border-color: var(--gold-light);
-  color: var(--gold-light);
+  box-shadow: inset 0 0 0 1px var(--accent-light);
+  color: var(--accent-light);
 }
 .btn:disabled {
   opacity: 0.5;
@@ -201,16 +210,16 @@ body {
   transition: border-color 0.2s;
 }
 .field:hover {
-  border-color: #cdbfa4;
+  border-color: color-mix(in srgb, var(--accent) 45%, var(--line));
 }
 .field:focus {
-  outline: 2px solid var(--gold);
+  outline: 2px solid var(--accent);
   outline-offset: 1px;
   border-color: transparent;
 }
 
 :focus-visible {
-  outline: 2px solid var(--gold);
+  outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
 
@@ -238,12 +247,13 @@ body {
   margin-block: 0.35rem;
 }
 .prose-store li::marker {
-  color: var(--gold);
+  color: var(--accent);
 }
 .prose-store h2 {
   font-family: var(--font-display);
+  font-weight: var(--display-weight);
+  letter-spacing: var(--display-tracking);
   font-size: 1.65rem;
-  font-weight: 500;
   color: var(--text);
   margin-top: 2.25rem;
 }
@@ -281,7 +291,7 @@ body {
 
 /* Native dialogs (search, mobile menu) */
 dialog::backdrop {
-  background: rgb(14 13 11 / 0.55);
+  background: color-mix(in srgb, var(--ink) 55%, transparent);
   backdrop-filter: blur(3px);
 }
 

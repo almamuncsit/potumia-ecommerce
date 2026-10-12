@@ -42,7 +42,7 @@ export default async function ContactPage() {
             {methods.map(({ Icon, title, value, href, note, external }) => {
               const inner = (
                 <>
-                  <span className="grid h-12 w-12 place-items-center rounded-full bg-ink text-gold-light">
+                  <span className="grid h-12 w-12 place-items-center rounded-full bg-ink text-accent-light">
                     <Icon className="h-5 w-5" />
                   </span>
                   <span className="eyebrow mt-6 block text-muted">{title}</span>
@@ -56,7 +56,7 @@ export default async function ContactPage() {
                     <a
                       href={href}
                       {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-                      className="block h-full rounded-2xl border border-line bg-card p-6 transition hover:-translate-y-0.5 hover:border-gold hover:shadow-lg hover:shadow-black/5"
+                      className="block h-full rounded-2xl border border-line bg-card p-6 transition hover:-translate-y-0.5 hover:border-accent hover:shadow-lg hover:shadow-black/5"
                     >
                       {inner}
                     </a>
@@ -69,7 +69,7 @@ export default async function ContactPage() {
           </ul>
 
           <div className="flex items-start gap-4 rounded-2xl bg-surface p-6">
-            <ClockIcon className="mt-0.5 h-5 w-5 shrink-0 text-gold-deep" />
+            <ClockIcon className="mt-0.5 h-5 w-5 shrink-0 text-accent-strong" />
             <div>
               <h2 className="font-medium">Customer service hours</h2>
               <p className="mt-1 text-muted">{BRAND.hours.label}. Messages sent outside these hours are answered the next working day.</p>

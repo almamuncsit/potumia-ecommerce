@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
-import { BRAND } from "@/lib/brand";
+import { BRAND, LABELS } from "@/lib/brand";
 import { getCategories, getStore } from "@/lib/catalog";
 import { HELP, NAV } from "@/lib/nav";
 import { getCustomer } from "@/lib/session";
@@ -30,14 +30,14 @@ async function AnnouncementBar() {
 
   return (
     <div className="bg-ink text-on-ink">
-      <div className="container-x flex h-9 items-center justify-center gap-6 text-[0.7rem] uppercase tracking-[0.22em] sm:justify-between">
+      <div className="container-x flex h-9 items-center justify-center gap-6 eyebrow !text-[0.7rem] sm:justify-between">
         <p>
-          <span className="text-gold-light">{BRAND.policies.payment}</span> across {BRAND.country}
+          <span className="text-accent-light">{BRAND.policies.payment}</span> across {BRAND.country}
           <span className="mx-3 hidden text-on-ink-muted md:inline">·</span>
           <span className="hidden md:inline">{BRAND.policies.exchangeDays}-day easy exchange</span>
         </p>
         {store.phone && (
-          <a href={`tel:${store.phone}`} className="hidden text-on-ink-muted hover:text-gold-light sm:inline">
+          <a href={`tel:${store.phone}`} className="hidden text-on-ink-muted hover:text-accent-light sm:inline">
             Call {store.phone}
           </a>
         )}
@@ -62,26 +62,26 @@ export async function Header() {
 
           <Link href="/" aria-label={`${BRAND.name} home`} className="shrink-0">
             <Image
-              src={BRAND.logo.horizontal.src}
+              src={BRAND.logo.onLight.src}
               alt={BRAND.name}
-              width={BRAND.logo.horizontal.width}
-              height={BRAND.logo.horizontal.height}
+              width={BRAND.logo.onLight.width}
+              height={BRAND.logo.onLight.height}
               priority
               className="h-8 w-auto lg:h-10"
             />
           </Link>
 
           <nav aria-label="Main" className="hidden flex-1 justify-center lg:flex">
-            <ul className="flex items-center gap-1 text-[0.78rem] uppercase tracking-[0.16em]">
+            <ul className="flex items-center gap-1 nav-text">
               {NAV.slice(0, 3).map((l) => (
                 <li key={l.href}>
-                  <Link href={l.href} className="rounded-full px-3.5 py-2 hover:text-gold-deep">{l.label}</Link>
+                  <Link href={l.href} className="rounded-full px-3.5 py-2 hover:text-accent-strong">{l.label}</Link>
                 </li>
               ))}
               {categoryLinks.length > 0 && (
                 <li className="group relative">
-                  <Link href="/categories" className="flex items-center gap-1 rounded-full px-3.5 py-2 hover:text-gold-deep">
-                    Collections <ChevronDownIcon className="h-3.5 w-3.5 transition group-hover:rotate-180" />
+                  <Link href="/categories" className="flex items-center gap-1 rounded-full px-3.5 py-2 hover:text-accent-strong">
+                    {LABELS.collections} <ChevronDownIcon className="h-3.5 w-3.5 transition group-hover:rotate-180" />
                   </Link>
                   <div className="invisible absolute left-1/2 top-full z-50 w-64 -translate-x-1/2 pt-3 opacity-0 transition group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100">
                     <ul className="rounded-2xl border border-line bg-card p-2 normal-case tracking-normal shadow-xl shadow-black/5">
@@ -91,14 +91,14 @@ export async function Header() {
                         </li>
                       ))}
                       <li className="mt-1 border-t border-line pt-1">
-                        <Link href="/categories" className="block rounded-xl px-3 py-2 text-sm font-medium text-gold-deep hover:bg-surface">All collections</Link>
+                        <Link href="/categories" className="block rounded-xl px-3 py-2 text-sm font-medium text-accent-strong hover:bg-surface">All {LABELS.collections.toLowerCase()}</Link>
                       </li>
                     </ul>
                   </div>
                 </li>
               )}
               <li>
-                <Link href="/about" className="rounded-full px-3.5 py-2 hover:text-gold-deep">Our story</Link>
+                <Link href="/about" className="rounded-full px-3.5 py-2 hover:text-accent-strong">Our story</Link>
               </li>
             </ul>
           </nav>

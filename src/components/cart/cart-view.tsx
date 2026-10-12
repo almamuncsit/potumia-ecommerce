@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { BRAND } from "@/lib/brand";
+import { BRAND, LABELS } from "@/lib/brand";
 import { formatMoney } from "@/lib/money";
 import type { Currency } from "@/lib/types";
 import { productPath } from "@/lib/urls";
@@ -33,7 +33,7 @@ function CartRow({ line, currency, error, editable }: { line: CartLine; currency
       </Link>
       <div className="flex min-w-0 flex-1 flex-col">
         <div className="flex items-start justify-between gap-4">
-          <Link href={href} className="line-clamp-2 text-sm font-medium hover:text-gold-deep sm:text-base">{line.name}</Link>
+          <Link href={href} className="line-clamp-2 text-sm font-medium hover:text-accent-strong sm:text-base">{line.name}</Link>
           <p className="shrink-0 text-sm font-medium sm:text-base">{formatMoney(line.price * line.quantity, currency)}</p>
         </div>
         <p className="mt-1 text-sm text-muted">
@@ -56,11 +56,11 @@ function CartRow({ line, currency, error, editable }: { line: CartLine; currency
 export function EmptyBag() {
   return (
     <div className="mx-auto max-w-md py-16 text-center">
-      <span className="mx-auto grid h-16 w-16 place-items-center rounded-full bg-surface text-gold-deep">
+      <span className="mx-auto grid h-16 w-16 place-items-center rounded-full bg-surface text-accent-strong">
         <BagIcon className="h-7 w-7" />
       </span>
       <p className="font-display mt-6 text-3xl">Your bag is empty</p>
-      <p className="mt-2 text-muted">Discover the new collection and find something you love.</p>
+      <p className="mt-2 text-muted">{LABELS.bagStory}</p>
       <Link href="/products" className="btn btn-primary mt-8">Start shopping</Link>
     </div>
   );
@@ -69,9 +69,9 @@ export function EmptyBag() {
 export function OrderPromises() {
   return (
     <ul className="space-y-2.5 text-sm text-muted">
-      <li className="flex items-center gap-3"><CashIcon className="h-4 w-4 text-gold-deep" /> {BRAND.policies.payment}</li>
-      <li className="flex items-center gap-3"><TruckIcon className="h-4 w-4 text-gold-deep" /> Delivery across {BRAND.country}</li>
-      <li className="flex items-center gap-3"><ExchangeIcon className="h-4 w-4 text-gold-deep" /> {BRAND.policies.exchangeDays}-day easy exchange</li>
+      <li className="flex items-center gap-3"><CashIcon className="h-4 w-4 text-accent-strong" /> {BRAND.policies.payment}</li>
+      <li className="flex items-center gap-3"><TruckIcon className="h-4 w-4 text-accent-strong" /> Delivery across {BRAND.country}</li>
+      <li className="flex items-center gap-3"><ExchangeIcon className="h-4 w-4 text-accent-strong" /> {BRAND.policies.exchangeDays}-day easy exchange</li>
     </ul>
   );
 }

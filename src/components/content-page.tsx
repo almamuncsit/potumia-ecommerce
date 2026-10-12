@@ -25,21 +25,21 @@ export async function HelpCard() {
 
   return (
     <div className="rounded-2xl bg-ink p-6 text-on-ink">
-      <p className="eyebrow text-gold-light">Need a hand?</p>
+      <p className="eyebrow text-accent-light">Need a hand?</p>
       <p className="font-display mt-2 text-2xl">We&apos;re here to help</p>
       <p className="mt-2 text-sm text-on-ink-muted">{BRAND.hours.label}</p>
       <div className="mt-5 space-y-2">
         {store.phone && (
-          <a href={`tel:${store.phone}`} className="flex items-center gap-3 rounded-xl border border-white/15 px-4 py-3 text-sm hover:border-gold-light">
-            <PhoneIcon className="h-4 w-4 text-gold" /> {store.phone}
+          <a href={`tel:${store.phone}`} className="flex items-center gap-3 rounded-xl border border-white/15 px-4 py-3 text-sm hover:border-accent-light">
+            <PhoneIcon className="h-4 w-4 text-accent" /> {store.phone}
           </a>
         )}
         {whatsapp && (
-          <a href={`https://wa.me/${whatsapp}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 rounded-xl border border-white/15 px-4 py-3 text-sm hover:border-gold-light">
-            <WhatsAppIcon className="h-4 w-4 text-gold" /> Chat on WhatsApp
+          <a href={`https://wa.me/${whatsapp}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 rounded-xl border border-white/15 px-4 py-3 text-sm hover:border-accent-light">
+            <WhatsAppIcon className="h-4 w-4 text-accent" /> Chat on WhatsApp
           </a>
         )}
-        <Link href="/contact" className="block px-1 pt-2 text-xs uppercase tracking-[0.18em] text-gold-light hover:underline">All contact options</Link>
+        <Link href="/contact" className="block px-1 pt-2 text-xs uppercase tracking-[0.18em] text-accent-light hover:underline">All contact options</Link>
       </div>
     </div>
   );

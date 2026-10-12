@@ -1,0 +1,72 @@
+/*
+ * Evoke: warm ivory pages, ink-black sections and brushed gold from the logo,
+ * a serif for headlines and spaced uppercase labels.
+ */
+:root {
+  color-scheme: light;
+
+  /* Colours */
+  --bg: #fbf9f5;
+  --surface: #f3eee5;
+  --sand: #e9e0cf;
+  --card: #ffffff;
+  --text: #16130e;
+  --muted: #6c6457;
+  --line: #e6ddcc;
+  --ink: #0e0d0b;
+  --ink-2: #1c1a16;
+  --on-ink: #f4eedf;
+  --on-ink-muted: #a89f8c;
+  --accent: #c6a25a;
+  --accent-light: #e7cf96;
+  --accent-strong: #8a6a2e;
+  --brand: #8a6a2e;
+  --brand-strong: #6f5422;
+  --brand-soft: #f3ead8;
+  --on-brand: #ffffff;
+  --sale: #a23b22;
+  --danger: #b42318;
+  --ok: #2f6b3a;
+  --selection: #e7cf96;
+
+  /* Surfaces */
+  --accent-gradient: linear-gradient(100deg, #8a6a2e 0%, #e7cf96 38%, #c6a25a 58%, #8a6a2e 100%);
+  --ink-glow: radial-gradient(120% 130% at 85% 25%, #2a2419 0%, #0e0d0b 62%);
+  --soft-glow: radial-gradient(70% 90% at 85% 20%, #f3ead8 0%, #fbf9f5 70%);
+  --placeholder: radial-gradient(circle at 50% 40%, #f6efe2, #e9e0cf);
+
+  /* Type */
+  --display-weight: 500;
+  --display-tracking: -0.01em;
+  --eyebrow-size: 0.72rem;
+  --eyebrow-weight: 500;
+  --eyebrow-tracking: 0.28em;
+  --nav-size: 0.78rem;
+  --nav-weight: 400;
+  --nav-tracking: 0.16em;
+  --nav-case: uppercase;
+
+  /* Buttons */
+  --btn-size: 0.82rem;
+  --btn-weight: 500;
+  --btn-tracking: 0.14em;
+  --btn-case: uppercase;
+  --btn-primary-bg: #0e0d0b;
+  --btn-primary-bg-hover: #8a6a2e;
+  --btn-primary-fg: #f4eedf;
+  --btn-primary-shadow: none;
+  --btn-accent-bg: linear-gradient(110deg, #b8924a, #e7cf96 50%, #c6a25a);
+  --btn-accent-fg: #0e0d0b;
+  --btn-accent-shadow: 0 10px 30px -12px rgb(198 162 90 / 0.7);
+  --btn-accent-shadow-hover: 0 14px 36px -12px rgb(198 162 90 / 0.9);
+  --btn-outline-bg: transparent;
+  --btn-outline-border: #16130e;
+  --btn-outline-hover-bg: #16130e;
+  --btn-outline-hover-border: #16130e;
+  --btn-outline-hover-fg: #fbf9f5;
+}
+
+/* The highlighted word in feature headlines is set in italic */
+h2 .text-accent-gradient {
+  font-style: italic;
+}

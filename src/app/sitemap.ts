@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { HAS_SIZE_GUIDE } from "@/content/pages";
 import { getIndex } from "@/lib/catalog";
 import { absoluteUrl, brandPath, categoryPath, productPath } from "@/lib/urls";
 
@@ -17,7 +18,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: absoluteUrl("/categories"), changeFrequency: "weekly", priority: 0.5 },
     { url: absoluteUrl("/brands"), changeFrequency: "weekly", priority: 0.4 },
     // Help and company pages
-    ...["/about", "/contact", "/faq", "/shipping", "/returns", "/size-guide"].map((path) => ({
+    ...["/about", "/contact", "/faq", "/shipping", "/returns", ...(HAS_SIZE_GUIDE ? ["/size-guide"] : [])].map((path) => ({
       url: absoluteUrl(path),
       changeFrequency: "monthly" as const,
       priority: 0.6,

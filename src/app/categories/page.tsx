@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
+import { BRAND, LABELS } from "@/lib/brand";
 import { GroupIndex } from "@/components/group-page";
 import { getCategories } from "@/lib/catalog";
 
 export const metadata: Metadata = {
-  title: "Shop by Collection",
-  description: "Browse every Evoke collection and find exactly what you are looking for, with cash on delivery across Bangladesh.",
+  title: `Shop by ${LABELS.collection}`,
+  description: `Browse every ${BRAND.name} ${LABELS.collection.toLowerCase()} and find exactly what you are looking for, with cash on delivery across ${BRAND.country}.`,
   alternates: { canonical: "/categories" },
 };
 

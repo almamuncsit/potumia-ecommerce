@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { BRAND, whatsappNumber } from "@/lib/brand";
+import { BRAND, LABELS, whatsappNumber } from "@/lib/brand";
 import { getCategories, getStore } from "@/lib/catalog";
 import { categoryPath } from "@/lib/urls";
 import { HELP } from "@/lib/nav";
@@ -9,8 +9,8 @@ import { CashIcon, ExchangeIcon, MailIcon, PhoneIcon, PinIcon, ShieldIcon, Truck
 const PROMISES = [
   { Icon: CashIcon, title: BRAND.policies.payment, text: "Pay when your order arrives" },
   { Icon: TruckIcon, title: "Nationwide delivery", text: `Inside Dhaka in ${BRAND.policies.deliveryDhaka}` },
-  { Icon: ExchangeIcon, title: `${BRAND.policies.exchangeDays}-day exchange`, text: "Easy size and style exchanges" },
-  { Icon: ShieldIcon, title: "Quality checked", text: "Every piece inspected before it ships" },
+  { Icon: ExchangeIcon, title: `${BRAND.policies.exchangeDays}-day exchange`, text: "Easy exchanges, no hassle" },
+  { Icon: ShieldIcon, title: "Quality checked", text: `Every ${LABELS.item} inspected before it ships` },
 ];
 
 /** The four store promises, used above the footer and on product pages */
@@ -21,7 +21,7 @@ export function PromiseStrip({ tone = "light" }: { tone?: "light" | "dark" }) {
     <ul className={`grid grid-cols-2 gap-x-6 gap-y-8 lg:grid-cols-4 ${dark ? "text-on-ink" : ""}`}>
       {PROMISES.map(({ Icon, title, text }) => (
         <li key={title} className="flex items-start gap-3.5">
-          <span className={`grid h-11 w-11 shrink-0 place-items-center rounded-full border ${dark ? "border-gold/40 text-gold-light" : "border-gold/50 text-gold-deep"}`}>
+          <span className={`grid h-11 w-11 shrink-0 place-items-center rounded-full border ${dark ? "border-accent/40 text-accent-light" : "border-accent/50 text-accent-strong"}`}>
             <Icon className="h-5 w-5" />
           </span>
           <span>
@@ -49,13 +49,13 @@ export async function Footer() {
       <div className="container-x grid gap-12 py-16 md:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1.2fr]">
         <section className="max-w-sm">
           <Link href="/" aria-label={`${BRAND.name} home`}>
-            <Image src={BRAND.logo.horizontal.src} alt={BRAND.name} width={BRAND.logo.horizontal.width} height={BRAND.logo.horizontal.height} className="h-10 w-auto" />
+            <Image src={BRAND.logo.onDark.src} alt={BRAND.name} width={BRAND.logo.onDark.width} height={BRAND.logo.onDark.height} className="h-10 w-auto" />
           </Link>
           <p className="mt-6 text-sm leading-relaxed text-on-ink-muted">{BRAND.description}</p>
         </section>
 
         <nav aria-labelledby="footer-shop">
-          <h2 id="footer-shop" className="eyebrow text-gold-light">Shop</h2>
+          <h2 id="footer-shop" className="eyebrow text-accent-light">Shop</h2>
           <ul className="mt-5 space-y-3 text-sm text-on-ink-muted">
             <li><Link href="/products" className="link-line hover:text-on-ink">All products</Link></li>
             <li><Link href="/products?sort=newest" className="link-line hover:text-on-ink">New arrivals</Link></li>
@@ -67,7 +67,7 @@ export async function Footer() {
         </nav>
 
         <nav aria-labelledby="footer-help">
-          <h2 id="footer-help" className="eyebrow text-gold-light">Help</h2>
+          <h2 id="footer-help" className="eyebrow text-accent-light">Help</h2>
           <ul className="mt-5 space-y-3 text-sm text-on-ink-muted">
             {HELP.map((h) => (
               <li key={h.href}><Link href={h.href} className="link-line hover:text-on-ink">{h.label}</Link></li>
@@ -77,26 +77,26 @@ export async function Footer() {
         </nav>
 
         <section aria-labelledby="footer-contact">
-          <h2 id="footer-contact" className="eyebrow text-gold-light">Get in touch</h2>
+          <h2 id="footer-contact" className="eyebrow text-accent-light">Get in touch</h2>
           <address className="mt-5 space-y-3.5 text-sm not-italic text-on-ink-muted">
             {store.phone && (
               <a href={`tel:${store.phone}`} className="flex items-center gap-3 hover:text-on-ink">
-                <PhoneIcon className="h-4 w-4 text-gold" /> {store.phone}
+                <PhoneIcon className="h-4 w-4 text-accent" /> {store.phone}
               </a>
             )}
             {whatsapp && (
               <a href={`https://wa.me/${whatsapp}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 hover:text-on-ink">
-                <WhatsAppIcon className="h-4 w-4 text-gold" /> WhatsApp us
+                <WhatsAppIcon className="h-4 w-4 text-accent" /> WhatsApp us
               </a>
             )}
             {store.email && (
               <a href={`mailto:${store.email}`} className="flex items-center gap-3 break-all hover:text-on-ink">
-                <MailIcon className="h-4 w-4 shrink-0 text-gold" /> {store.email}
+                <MailIcon className="h-4 w-4 shrink-0 text-accent" /> {store.email}
               </a>
             )}
             {store.address && (
               <p className="flex items-start gap-3">
-                <PinIcon className="mt-0.5 h-4 w-4 shrink-0 text-gold" /> {store.address}
+                <PinIcon className="mt-0.5 h-4 w-4 shrink-0 text-accent" /> {store.address}
               </p>
             )}
             <p className="pt-1 text-xs">{BRAND.hours.label}</p>
@@ -111,7 +111,7 @@ export async function Footer() {
             <li><Link href="/privacy" className="hover:text-on-ink">Privacy policy</Link></li>
             <li><Link href="/terms" className="hover:text-on-ink">Terms & conditions</Link></li>
             <li className="flex items-center gap-2 rounded-full border border-white/15 px-3 py-1">
-              <CashIcon className="h-4 w-4 text-gold" /> {BRAND.policies.payment}
+              <CashIcon className="h-4 w-4 text-accent" /> {BRAND.policies.payment}
             </li>
           </ul>
         </div>

@@ -3,9 +3,10 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { BRAND } from "@/lib/brand";
-import { ArrowLeftIcon, ArrowRightIcon } from "../icons";
-import { Drape, GoldRings, Lattice } from "./art";
+import type { HeroProps } from "../types";
+import { THEME } from "./config";
+import { ArrowLeftIcon, ArrowRightIcon } from "@/components/icons";
+import { ArtFlow, ArtRings, ArtPattern } from "./art";
 
 type Slide = {
   key: string;
@@ -41,7 +42,7 @@ const SLIDES: Slide[] = [
     theme: "dark",
     eyebrow: "Shop with ease",
     title: "Cash on delivery, all over Bangladesh",
-    text: `Order online and pay when it reaches your door. Not quite right? Exchange it within ${BRAND.policies.exchangeDays} days.`,
+    text: `Order online and pay when it reaches your door. Not quite right? Exchange it within ${THEME.brand.policies.exchangeDays} days.`,
     primary: { label: "Start shopping", href: "/products" },
     secondary: { label: "Delivery details", href: "/shipping" },
   },
@@ -55,12 +56,12 @@ function SlideArt({ slide, active }: { slide: Slide; active: boolean }) {
   if (slide.key === "season") {
     return (
       <div className={`absolute inset-0 ${motion}`}>
-        <GoldRings id="hero-rings" className="absolute -right-24 top-1/2 h-[140%] w-auto -translate-y-1/2 opacity-60 md:right-0 md:opacity-100" />
+        <ArtRings id="hero-rings" className="absolute -right-24 top-1/2 h-[140%] w-auto -translate-y-1/2 opacity-60 md:right-0 md:opacity-100" />
         <Image
-          src={BRAND.logo.mark.src}
+          src={THEME.brand.logo.mark.src}
           alt=""
-          width={BRAND.logo.mark.width}
-          height={BRAND.logo.mark.height}
+          width={THEME.brand.logo.mark.width}
+          height={THEME.brand.logo.mark.height}
           priority
           sizes="(min-width: 768px) 34vw, 60vw"
           className="absolute right-[-6%] top-1/2 w-[62%] max-w-[26rem] -translate-y-1/2 opacity-30 drop-shadow-[0_20px_60px_rgba(198,162,90,0.35)] md:right-[11%] md:w-[30%] md:opacity-95"
@@ -71,18 +72,18 @@ function SlideArt({ slide, active }: { slide: Slide; active: boolean }) {
   if (slide.key === "essentials") {
     return (
       <div className={`absolute inset-0 ${motion}`}>
-        <Drape id="hero-drape" className="absolute inset-0 h-full w-full" />
+        <ArtFlow id="hero-drape" className="absolute inset-0 h-full w-full" />
       </div>
     );
   }
   return (
     <div className={`absolute inset-0 ${motion}`}>
-      <Lattice id="hero-lattice" className="absolute inset-0 h-full w-full" />
+      <ArtPattern id="hero-lattice" className="absolute inset-0 h-full w-full" />
     </div>
   );
 }
 
-export function HeroSlider() {
+function HeroSlider() {
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
   const [reduced, setReduced] = useState(false);
@@ -140,13 +141,13 @@ export function HeroSlider() {
               />
               <div className="container-x relative flex h-full items-end pb-20 md:items-center md:pb-0">
                 <div key={active ? `on-${index}` : "off"} className={`max-w-xl ${active ? "animate-fade-up" : ""}`}>
-                  <p className={`eyebrow ${dark ? "text-gold-light" : "text-gold-deep"}`}>{slide.eyebrow}</p>
+                  <p className={`eyebrow ${dark ? "text-accent-light" : "text-accent-strong"}`}>{slide.eyebrow}</p>
                   <Heading className="font-display mt-4 text-[2.6rem] font-medium leading-[1.05] sm:text-6xl lg:text-7xl">
                     {slide.title}
                   </Heading>
                   <p className={`mt-5 max-w-md text-base leading-relaxed sm:text-lg ${dark ? "text-on-ink-muted" : "text-muted"}`}>{slide.text}</p>
                   <div className="mt-8 flex flex-wrap gap-3">
-                    <Link href={slide.primary.href} className={`btn ${dark ? "btn-gold" : "btn-primary"}`}>
+                    <Link href={slide.primary.href} className={`btn ${dark ? "btn-accent" : "btn-primary"}`}>
                       {slide.primary.label}
                     </Link>
                     {slide.secondary && (
@@ -176,7 +177,7 @@ export function HeroSlider() {
             >
               <span className={`absolute inset-x-0 top-1/2 h-0.5 -translate-y-1/2 rounded-full ${SLIDES[index].theme === "dark" ? "bg-white/25" : "bg-black/15"}`} />
               <span
-                className={`absolute left-0 top-1/2 h-0.5 -translate-y-1/2 rounded-full bg-gold ${
+                className={`absolute left-0 top-1/2 h-0.5 -translate-y-1/2 rounded-full bg-accent ${
                   i === index ? (paused || reduced ? "w-full" : "w-full transition-[width] ease-linear") : "w-0"
                 }`}
                 style={i === index && !paused && !reduced ? { animation: `hero-progress ${INTERVAL}ms linear` } : undefined}
@@ -195,7 +196,7 @@ export function HeroSlider() {
               aria-label={label}
               onClick={() => go(index + step)}
               className={`grid h-11 w-11 place-items-center rounded-full border transition ${
-                SLIDES[index].theme === "dark" ? "border-white/30 text-on-ink hover:border-gold-light hover:text-gold-light" : "border-black/20 text-text hover:bg-text hover:text-bg"
+                SLIDES[index].theme === "dark" ? "border-white/30 text-on-ink hover:border-accent-light hover:text-accent-light" : "border-black/20 text-text hover:bg-text hover:text-bg"
               }`}
             >
               <Icon className="h-4 w-4" />
@@ -205,5 +206,34 @@ export function HeroSlider() {
       </div>
       <style>{`@keyframes hero-progress { from { width: 0 } to { width: 100% } }`}</style>
     </section>
+  );
+}
+
+/** Gold ticker of the store's promises under the hero */
+function Ticker() {
+  const items = [...THEME.home.ticker, ...THEME.home.ticker];
+  return (
+    <div className="overflow-hidden border-y border-accent/25 bg-ink py-4 text-on-ink" aria-hidden="true">
+      <div className="flex w-max animate-[ticker_38s_linear_infinite] gap-12 whitespace-nowrap">
+        {items.map((item, i) => (
+          <span key={i} className="flex items-center gap-12 text-[0.72rem] uppercase tracking-[0.3em]">
+            {item}
+            <span className="h-1.5 w-1.5 rotate-45 bg-accent" />
+          </span>
+        ))}
+      </div>
+      <style>{`@keyframes ticker { to { transform: translateX(-50%) } }`}</style>
+    </div>
+  );
+}
+
+/** Evoke's home hero: full-width cross-fading banners and the gold ticker */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export function Hero(_props: HeroProps) {
+  return (
+    <>
+      <HeroSlider />
+      <Ticker />
+    </>
   );
 }

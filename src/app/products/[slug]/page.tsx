@@ -9,7 +9,8 @@ import { SectionHeading } from "@/components/page-hero";
 import { Price } from "@/components/price";
 import { ProductGrid } from "@/components/product-card";
 import { StoreImage } from "@/components/store-image";
-import { BRAND } from "@/lib/brand";
+import { HAS_SIZE_GUIDE } from "@/content/pages";
+import { BRAND, LABELS } from "@/lib/brand";
 import { getIndex, getProduct, getStore } from "@/lib/catalog";
 import { formatMoney } from "@/lib/money";
 import { absoluteUrl, brandPath, categoryPath, parseIdSlug, productPath } from "@/lib/urls";
@@ -101,14 +102,14 @@ export default async function ProductPage({ params }: PageProps<"/products/[slug
             className="object-cover"
           />
           {product.regular_price && (
-            <span className="eyebrow absolute left-5 top-5 rounded-full bg-ink px-3 py-1.5 text-[0.65rem] text-gold-light">On sale</span>
+            <span className="eyebrow absolute left-5 top-5 rounded-full bg-ink px-3 py-1.5 text-[0.65rem] text-accent-light">On sale</span>
           )}
         </div>
 
         <div className="lg:py-4">
           <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
             {product.category && (
-              <Link href={categoryPath(product.category)} className="eyebrow text-gold-deep hover:underline">{product.category.name}</Link>
+              <Link href={categoryPath(product.category)} className="eyebrow text-accent-strong hover:underline">{product.category.name}</Link>
             )}
             {product.brand && (
               <>
@@ -143,15 +144,15 @@ export default async function ProductPage({ params }: PageProps<"/products/[slug
 
           <ul className="mt-8 grid grid-cols-3 gap-3 border-y border-line py-6 text-center text-xs">
             <li className="space-y-2">
-              <CashIcon className="mx-auto h-6 w-6 text-gold-deep" />
+              <CashIcon className="mx-auto h-6 w-6 text-accent-strong" />
               <span className="block">{payment}</span>
             </li>
             <li className="space-y-2">
-              <TruckIcon className="mx-auto h-6 w-6 text-gold-deep" />
+              <TruckIcon className="mx-auto h-6 w-6 text-accent-strong" />
               <span className="block">Nationwide delivery</span>
             </li>
             <li className="space-y-2">
-              <ExchangeIcon className="mx-auto h-6 w-6 text-gold-deep" />
+              <ExchangeIcon className="mx-auto h-6 w-6 text-accent-strong" />
               <span className="block">{exchangeDays}-day exchange</span>
             </li>
           </ul>
@@ -159,47 +160,49 @@ export default async function ProductPage({ params }: PageProps<"/products/[slug
           <div>
             {product.description_html && (
               <details className={PANEL} open>
-                <summary className="flex items-center justify-between text-sm font-medium uppercase tracking-[0.16em]">
-                  Description <PlusIcon className="h-4 w-4 text-gold-deep transition group-open:rotate-45" />
+                <summary className="flex items-center justify-between text-sm font-medium nav-text">
+                  Description <PlusIcon className="h-4 w-4 text-accent-strong transition group-open:rotate-45" />
                 </summary>
                 {/* Cleaned by the API: basic formatting tags only, no attributes or scripts */}
                 <div className="prose-store mt-3 text-[0.95rem]" dangerouslySetInnerHTML={{ __html: product.description_html }} />
               </details>
             )}
             <details className={PANEL}>
-              <summary className="flex items-center justify-between text-sm font-medium uppercase tracking-[0.16em]">
-                Details <PlusIcon className="h-4 w-4 text-gold-deep transition group-open:rotate-45" />
+              <summary className="flex items-center justify-between text-sm font-medium nav-text">
+                Details <PlusIcon className="h-4 w-4 text-accent-strong transition group-open:rotate-45" />
               </summary>
               <dl className="mt-4 grid grid-cols-[7rem_1fr] gap-y-2 text-sm">
                 <dt className="text-muted">Item code</dt>
                 <dd>{product.sku ?? `EV-${product.id}`}</dd>
-                {product.category && (<><dt className="text-muted">Collection</dt><dd>{product.category.name}</dd></>)}
+                {product.category && (<><dt className="text-muted">{LABELS.collection}</dt><dd>{product.category.name}</dd></>)}
                 {product.brand && (<><dt className="text-muted">Brand</dt><dd>{product.brand.name}</dd></>)}
                 {product.unit && (<><dt className="text-muted">Sold by</dt><dd>{product.unit}</dd></>)}
               </dl>
-              <Link href="/size-guide" className="mt-4 inline-flex items-center gap-2 text-sm text-gold-deep hover:underline">
-                <RulerIcon className="h-4 w-4" /> Size guide
-              </Link>
+              {HAS_SIZE_GUIDE && (
+                <Link href="/size-guide" className="mt-4 inline-flex items-center gap-2 text-sm text-accent-strong hover:underline">
+                  <RulerIcon className="h-4 w-4" /> Size guide
+                </Link>
+              )}
             </details>
             <details className={PANEL}>
-              <summary className="flex items-center justify-between text-sm font-medium uppercase tracking-[0.16em]">
-                Delivery & payment <PlusIcon className="h-4 w-4 text-gold-deep transition group-open:rotate-45" />
+              <summary className="flex items-center justify-between text-sm font-medium nav-text">
+                Delivery & payment <PlusIcon className="h-4 w-4 text-accent-strong transition group-open:rotate-45" />
               </summary>
               <ul className="mt-3 space-y-1.5 text-sm text-muted">
                 <li>Inside Dhaka: {deliveryDhaka}</li>
                 <li>Outside Dhaka: {deliveryOutside}</li>
                 <li>{payment}: pay when your order arrives</li>
               </ul>
-              <Link href="/shipping" className="mt-3 inline-block text-sm text-gold-deep hover:underline">Shipping details</Link>
+              <Link href="/shipping" className="mt-3 inline-block text-sm text-accent-strong hover:underline">Shipping details</Link>
             </details>
             <details className={PANEL}>
-              <summary className="flex items-center justify-between text-sm font-medium uppercase tracking-[0.16em]">
-                Exchange & returns <PlusIcon className="h-4 w-4 text-gold-deep transition group-open:rotate-45" />
+              <summary className="flex items-center justify-between text-sm font-medium nav-text">
+                Exchange & returns <PlusIcon className="h-4 w-4 text-accent-strong transition group-open:rotate-45" />
               </summary>
               <p className="mt-3 text-sm text-muted">
                 Exchange within {exchangeDays} days of delivery if it&apos;s unworn with tags attached. Damaged or wrong items are replaced free of charge.
               </p>
-              <Link href="/returns" className="mt-3 inline-block text-sm text-gold-deep hover:underline">Exchange policy</Link>
+              <Link href="/returns" className="mt-3 inline-block text-sm text-accent-strong hover:underline">Exchange policy</Link>
             </details>
           </div>
         </div>
@@ -207,7 +210,7 @@ export default async function ProductPage({ params }: PageProps<"/products/[slug
 
       {related.length > 0 && (
         <section aria-labelledby="related-heading" className="container-x pt-24">
-          <SectionHeading id="related-heading" eyebrow="You may also like" title="Complete the look" href={product.category ? categoryPath(product.category) : "/products"} />
+          <SectionHeading id="related-heading" eyebrow="You may also like" title={LABELS.related} href={product.category ? categoryPath(product.category) : "/products"} />
           <ProductGrid products={related.slice(0, 4)} currency={store.currency} />
         </section>
       )}

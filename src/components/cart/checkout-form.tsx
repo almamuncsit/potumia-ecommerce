@@ -15,7 +15,7 @@ function Step({ n, title, children }: { n: number; title: string; children: Reac
   return (
     <section className="rounded-3xl border border-line bg-card p-6 sm:p-8">
       <h2 className="flex items-center gap-4">
-        <span className="font-display grid h-9 w-9 place-items-center rounded-full bg-ink text-lg text-gold-light lining-nums">{n}</span>
+        <span className="font-display grid h-9 w-9 place-items-center rounded-full bg-ink text-lg text-accent-light lining-nums">{n}</span>
         <span className="font-display text-2xl">{title}</span>
       </h2>
       <div className="mt-6 space-y-5">{children}</div>
@@ -45,7 +45,7 @@ export function CheckoutForm({ currency, customer }: { currency: Currency; custo
             </p>
           ) : (
             <p className="text-sm text-muted">
-              Have an account? <Link href="/account/login?next=/checkout" className="font-medium text-gold-deep underline">Log in</Link> to follow this order later.
+              Have an account? <Link href="/account/login?next=/checkout" className="font-medium text-accent-strong underline">Log in</Link> to follow this order later.
             </p>
           )}
           {!customer && (
@@ -63,9 +63,9 @@ export function CheckoutForm({ currency, customer }: { currency: Currency; custo
           <fieldset>
             <legend className="sr-only">Payment method</legend>
             {/* Only cash on delivery for now; more methods can be added here */}
-            <label className="flex cursor-pointer items-center gap-4 rounded-2xl border-2 border-gold bg-brand-soft p-4">
-              <input type="radio" name="payment_method" value="cod" defaultChecked required className="h-4 w-4 accent-[var(--gold-deep)]" />
-              <CashIcon className="h-6 w-6 text-gold-deep" />
+            <label className="flex cursor-pointer items-center gap-4 rounded-2xl border-2 border-accent bg-brand-soft p-4">
+              <input type="radio" name="payment_method" value="cod" defaultChecked required className="h-4 w-4 accent-[var(--accent-strong)]" />
+              <CashIcon className="h-6 w-6 text-accent-strong" />
               <span>
                 <span className="block font-medium">Cash on delivery</span>
                 <span className="text-sm text-muted">Pay in cash when your order arrives.</span>
