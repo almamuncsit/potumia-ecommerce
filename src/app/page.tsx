@@ -1,69 +1,77 @@
-import Image from "next/image";
+import Link from "next/link";
+import { JsonLd } from "@/components/json-ld";
+import { ProductGrid } from "@/components/product-card";
+import { getHome, getStore } from "@/lib/catalog";
+import { absoluteUrl, categoryPath, productPath } from "@/lib/urls";
 
-export default function Home() {
+export default async function HomePage() {
+  const [store, home] = await Promise.all([getStore(), getHome()]);
+  const featured = home.best_sellers.length ? home.best_sellers : home.new_arrivals;
+  const newArrivals = home.new_arrivals.filter((p) => !featured.some((f) => f.id === p.id));
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <div className="space-y-12">
+      <section className="rounded-2xl bg-brand-soft px-6 py-10 sm:px-10 sm:py-14">
+        <h1 className="max-w-2xl text-3xl font-bold tracking-tight sm:text-4xl">{store.name}</h1>
+        {store.description && <p className="mt-3 max-w-2xl text-lg text-muted">{store.description}</p>}
+        <div className="mt-6 flex flex-wrap gap-3">
+          <Link href="/products" className="btn btn-primary">Shop all products</Link>
+          {home.categories.length > 0 && <Link href="/categories" className="btn btn-outline">Browse categories</Link>}
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+      </section>
+
+      {home.categories.length > 0 && (
+        <section aria-labelledby="categories-heading">
+          <h2 id="categories-heading" className="text-xl font-semibold">Shop by category</h2>
+          <ul className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+            {home.categories.map((category) => (
+              <li key={category.id}>
+                <Link href={categoryPath(category)} className="block rounded-xl border border-line bg-card p-4 hover:border-brand">
+                  <span className="block font-medium">{category.name}</span>
+                  <span className="text-sm text-muted">{category.products} {category.products === 1 ? "product" : "products"}</span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      {featured.length > 0 && (
+        <section aria-labelledby="featured-heading">
+          <div className="flex items-baseline justify-between gap-4">
+            <h2 id="featured-heading" className="text-xl font-semibold">{home.best_sellers.length ? "Best sellers" : "Our products"}</h2>
+            <Link href="/products?sort=popular" className="text-sm font-medium text-brand hover:underline">See all</Link>
+          </div>
+          <div className="mt-4">
+            <ProductGrid products={featured} currency={store.currency} eager={4} />
+          </div>
+        </section>
+      )}
+
+      {newArrivals.length > 0 && (
+        <section aria-labelledby="new-heading">
+          <div className="flex items-baseline justify-between gap-4">
+            <h2 id="new-heading" className="text-xl font-semibold">New arrivals</h2>
+            <Link href="/products?sort=newest" className="text-sm font-medium text-brand hover:underline">See all</Link>
+          </div>
+          <div className="mt-4">
+            <ProductGrid products={newArrivals} currency={store.currency} />
+          </div>
+        </section>
+      )}
+
+      {featured.length === 0 && (
+        <p className="rounded-xl border border-dashed border-line p-10 text-center text-muted">Products are coming soon.</p>
+      )}
+
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "ItemList",
+          name: `${store.name}: featured products`,
+          itemListElement: featured.map((p, i) => ({ "@type": "ListItem", position: i + 1, url: absoluteUrl(productPath(p)), name: p.name })),
+        }}
+      />
     </div>
   );
 }

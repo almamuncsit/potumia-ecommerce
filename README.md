@@ -1,36 +1,45 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Potumia online store
 
-## Getting Started
+The customer-facing shop for a Potumia shop: browse products, a cart, cash-on-delivery checkout, and customer accounts with order history. It's built with Next.js 16 (App Router, Cache Components) and reads everything from the inventory API (`multipos-api`, endpoints under `/api/ecommerce/store`).
 
-First, run the development server:
+## Setup
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+cp .env.example .env.local   # then fill it in
+npm run dev                  # http://localhost:3100
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+| Variable | What it is |
+| --- | --- |
+| `API_URL` | The inventory API, e.g. `https://api.potumia.com/api` (local: `http://127.0.0.1:8001/api`) |
+| `WEBSITE_API_KEY` | The shop's website key: inventory app → Settings → Website. It decides which shop the store shows. Server-only, never sent to browsers. |
+| `NEXT_PUBLIC_SITE_URL` | The store's public address, e.g. `https://shop.example.com`. Used for canonical URLs, the sitemap and structured data, so set it correctly in production. |
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+The API needs the migration `2026_10_12_000001_create_ecommerce_customer_tables` (`php artisan migrate`).
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Building and deploying
 
-## Learn More
+```bash
+npm run build && npm run start -- -p 3100
+```
 
-To learn more about Next.js, take a look at the following resources:
+`next build` calls the API to prerender product, category and brand pages, so the API must be reachable while building. Pages refresh in the background every 5 minutes (prices and stock) and every hour (shop name and logo); see `cacheLife` in `next.config.ts`. Checkout always checks live prices and stock with the shop, whatever a cached page showed.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## How it fits together
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- **All API calls run on the Next.js server** (`src/lib/api.ts`, marked `server-only`). The website key is never exposed, and pages arrive as complete HTML.
+- **Customer accounts are separate from inventory logins.** Customers have their own table and tokens in the API (`ecommerce_customers`, `ecommerce_customer_tokens`). A customer token is refused by the inventory API, and an inventory token is refused here. There are no roles or permissions. In the browser the token lives in an httpOnly cookie (`store_session`) that page scripts can't read.
+- **Cart:** kept in `localStorage` in the browser (`src/components/cart/cart-store.ts`). Checkout sends only product ids and quantities; the shop sets the prices.
+- **Orders:** placed as *sales orders* (source "ecommerce") in the inventory app, where staff move them through pending → processing → shipping → delivered and complete them. Customers see the status in their account. The delivery details and payment method are in the order's notes.
+- **Payment:** cash on delivery only, for now. To add a method, extend `PAYMENT_METHODS` in `OrderController` (API) and the Payment section in `checkout-form.tsx`.
 
-## Deploy on Vercel
+## Search engines and AI assistants
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Every product, category and brand has one canonical URL (`/products/12-blue-widget`). An old or mistyped name gets a 308 permanent redirect, and a missing item gets a real 404.
+- Product pages are prerendered with the title, description, canonical link, Open Graph tags and `Product` / `Offer` structured data (price, currency, availability, brand) in the first HTML.
+- Site-wide `OnlineStore` and `WebSite` (with `SearchAction`) structured data, plus `BreadcrumbList` on every catalog page.
+- `/sitemap.xml` lists every product (with its image), category and brand, with last-changed dates. `/robots.txt` lets search engines and AI crawlers read the catalog and keeps them out of account, cart and checkout pages.
+- Search and filter results are `noindex, follow`: not indexed as thin, duplicate pages, but their product links are followed.
+- **`/llms.txt`** is a Markdown summary of the store (pages, categories, brands, every product with price and availability) for AI assistants and LLM search, following [llmstxt.org](https://llmstxt.org). **`/llms-full.txt`** adds each product's description.
+- Semantic HTML throughout: one `h1` per page, labelled forms, plain links for pagination and filters (everything works without JavaScript except the cart).
