@@ -1,14 +1,16 @@
 /*
  * Potumia: the look of the Potumia website. White pages with a soft indigo
  * and sky glow, the indigo → violet gradient of the app, the sky blue of the
- * logo, slate text, bold tight headlines and pill buttons.
+ * logo, slate text and bold tight headlines, laid out as a busy shop front:
+ * a light grey page with white bordered cards, square-ish buttons and warm
+ * orange for deals.
  */
 :root {
   color-scheme: light;
 
   /* Colours (indigo brand, sky accent, slate neutrals) */
-  --bg: #ffffff;
-  --surface: #f8fafc;
+  --bg: #f5f6fa;
+  --surface: #f1f5f9;
   --sand: #eef2ff;
   --card: #ffffff;
   --text: #0f172a;
@@ -26,6 +28,7 @@
   --brand-soft: #eef2ff;
   --on-brand: #ffffff;
   --sale: #e11d48;
+  --hot: #f97316;
   --danger: #dc2626;
   --ok: #059669;
   --selection: #c7d2fe;
@@ -52,6 +55,7 @@
 
   /* Buttons */
   --btn-size: 0.9375rem;
+  --btn-radius: 0.6rem;
   --btn-weight: 600;
   --btn-tracking: 0;
   --btn-case: none;

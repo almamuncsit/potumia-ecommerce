@@ -1,6 +1,8 @@
 import Link from "next/link";
+import { THEME } from "@/lib/brand";
 import { productPath } from "@/lib/urls";
 import type { Currency, Product } from "@/lib/types";
+import { MarketGrid } from "./market/cards";
 import { Price } from "./price";
 import { StoreImage } from "./store-image";
 
@@ -45,6 +47,9 @@ export function ProductCard({ product, currency, priority = false }: { product: 
 }
 
 export function ProductGrid({ products, currency, eager = 0, columns = 4 }: { products: Product[]; currency: Currency; eager?: number; columns?: 3 | 4 }) {
+  // Marketplace cards are smaller, so one more fits per row
+  if (THEME.ui.layout === "marketplace") return <MarketGrid products={products} currency={currency} eager={eager} columns={columns === 3 ? 4 : 5} />;
+
   return (
     <ul className={`grid grid-cols-2 gap-x-4 gap-y-10 sm:gap-x-6 md:grid-cols-3 ${columns === 4 ? "lg:grid-cols-4" : ""}`}>
       {products.map((product, i) => (

@@ -24,6 +24,24 @@ export function PageHero({
 }) {
   const dark = THEME.ui.pageHero === "dark";
 
+  // Marketplace: a compact title bar, so products start above the fold
+  if (THEME.ui.layout === "marketplace") {
+    return (
+      <section className="relative isolate overflow-hidden border-b border-line bg-card">
+        <span aria-hidden="true" className="absolute -right-16 -top-24 -z-10 h-64 w-64 rounded-full bg-brand-soft" />
+        <span aria-hidden="true" className="absolute -bottom-20 right-48 -z-10 hidden h-40 w-40 rounded-full bg-hot/10 sm:block" />
+        <div className="container-x py-6 sm:py-8">
+          <Breadcrumbs items={crumbs} tone="light" />
+          <div className="mt-3 max-w-3xl">
+            <h1 className="font-display text-3xl leading-tight text-text sm:text-4xl">{title}</h1>
+            {description && <p className="mt-2 text-sm leading-relaxed text-muted sm:text-base">{description}</p>}
+            {children}
+          </div>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section className={`relative isolate overflow-hidden ${dark ? "surface-ink" : "surface-soft border-b border-line"}`}>
       {art === "rings" ? (

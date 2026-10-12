@@ -47,7 +47,7 @@ export const THEME = {
     catalogTitle: "Shop All Products Online",
     related: "Customers also bought",
   },
-  ui: { pageHero: "light" },
+  ui: { pageHero: "light", layout: "marketplace" },
   home: {
     ticker: ["Cash on delivery", "Delivery all over Bangladesh", "7-day easy exchange", "Genuine products"],
     collections: { eyebrow: "Browse", title: "Shop by category" },

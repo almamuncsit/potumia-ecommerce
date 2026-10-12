@@ -26,11 +26,36 @@
   --color-brand-soft: var(--brand-soft);
   --color-on-brand: var(--on-brand);
   --color-sale: var(--sale);
+  /* Deal highlights (badges, savings); themes without one use the sale colour */
+  --color-hot: var(--hot, var(--sale));
   --color-danger: var(--danger);
   --color-ok: var(--ok);
   --font-sans: var(--font-body), ui-sans-serif, system-ui, sans-serif;
   --font-display: var(--font-heading), ui-sans-serif, system-ui, sans-serif;
   --animate-fade-up: fade-up 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+/* A photo swapped in (product gallery) */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* A count that just changed (cart badge) */
+@keyframes pop {
+  0% {
+    transform: scale(0.6);
+  }
+  60% {
+    transform: scale(1.18);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 
 @keyframes fade-up {
@@ -128,7 +153,7 @@ body {
   justify-content: center;
   gap: 0.6rem;
   min-height: 2.9rem;
-  border-radius: 999px;
+  border-radius: var(--btn-radius, 999px);
   padding: 0.75rem 1.5rem;
   font-weight: var(--btn-weight);
   font-size: var(--btn-size);

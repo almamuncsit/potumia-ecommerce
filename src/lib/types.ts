@@ -25,6 +25,8 @@ export type Group = {
   name: string;
   products?: number;
   description?: string;
+  /** Photo of the newest product in the group */
+  image?: string | null;
   updated_at?: string;
 };
 
@@ -43,11 +45,20 @@ export type Product = {
   category: Group | null;
   brand: Group | null;
   updated_at: string | null;
+  /** Quantity sold in the last 90 days */
+  sold?: number;
+  /** Added in the last 30 days */
+  is_new?: boolean;
 };
+
+/** A product photo: the main one first, then the shop's extra photos */
+export type ProductImage = { image: string; thumb: string | null; width: number | null; height: number | null };
 
 export type ProductDetail = Product & {
   description_html: string | null;
   description: string | null;
+  /** Every photo in order (older APIs leave it out) */
+  images?: ProductImage[];
 };
 
 export type PageMeta = {
@@ -62,6 +73,8 @@ export type ProductPage = { data: Product[]; meta: PageMeta };
 export type Home = {
   best_sellers: Product[];
   new_arrivals: Product[];
+  /** In-stock products on sale, biggest saving first */
+  deals: Product[];
   categories: Group[];
 };
 
@@ -110,6 +123,7 @@ export type ProductFilters = {
   min_price?: number;
   max_price?: number;
   in_stock?: boolean;
+  on_sale?: boolean;
   sort?: "newest" | "popular" | "price_asc" | "price_desc" | "name_asc";
   page?: number;
   per_page?: number;

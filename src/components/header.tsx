@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
-import { BRAND, LABELS } from "@/lib/brand";
+import { BRAND, LABELS, THEME } from "@/lib/brand";
 import { getCategories, getStore } from "@/lib/catalog";
 import { HELP, NAV } from "@/lib/nav";
 import { getCustomer } from "@/lib/session";
@@ -9,6 +9,7 @@ import { categoryPath } from "@/lib/urls";
 import { CartLink } from "./cart/cart-link";
 import { MobileMenu, SearchButton } from "./header-dialogs";
 import { ChevronDownIcon, UserIcon } from "./icons";
+import { MarketHeader } from "./market/header";
 
 async function AccountLink() {
   const customer = await getCustomer();
@@ -47,6 +48,8 @@ async function AnnouncementBar() {
 }
 
 export async function Header() {
+  if (THEME.ui.layout === "marketplace") return <MarketHeader />;
+
   const categories = await getCategories();
   const categoryLinks = categories.map((c) => ({ href: categoryPath(c), label: c.name }));
 

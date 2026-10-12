@@ -8,11 +8,12 @@ import { JsonLd } from "@/components/json-ld";
 import { SectionHeading } from "@/components/page-hero";
 import { Price } from "@/components/price";
 import { ProductGrid } from "@/components/product-card";
-import { StoreImage } from "@/components/store-image";
+import { ProductGallery } from "@/components/product-gallery";
 import { HAS_SIZE_GUIDE } from "@/content/pages";
-import { BRAND, LABELS } from "@/lib/brand";
+import { BRAND, LABELS, THEME } from "@/lib/brand";
 import { getIndex, getProduct, getStore } from "@/lib/catalog";
 import { formatMoney } from "@/lib/money";
+import type { ProductDetail, ProductImage } from "@/lib/types";
 import { absoluteUrl, brandPath, categoryPath, parseIdSlug, productPath } from "@/lib/urls";
 
 /**
@@ -56,7 +57,7 @@ export async function generateMetadata({ params }: PageProps<"/products/[slug]">
       title: product.name,
       description,
       url: productPath(product),
-      images: product.image ? [{ url: product.image, alt: product.name }] : undefined,
+      images: photosOf(product).length ? photosOf(product).map((p) => ({ url: p.image, alt: product.name })) : undefined,
     },
     other: {
       "product:price:amount": String(product.price),
@@ -67,6 +68,10 @@ export async function generateMetadata({ params }: PageProps<"/products/[slug]">
 }
 
 const PANEL = "group border-b border-line py-5";
+
+/** Every photo of the product; just the main one if the API doesn't list them */
+const photosOf = (product: ProductDetail): ProductImage[] =>
+  product.images?.length ? product.images : product.image ? [{ image: product.image, thumb: product.thumb, width: null, height: null }] : [];
 
 export default async function ProductPage({ params }: PageProps<"/products/[slug]">) {
   const { slug } = await params;
@@ -90,21 +95,11 @@ export default async function ProductPage({ params }: PageProps<"/products/[slug
       </div>
 
       <article className="container-x grid gap-10 pt-8 lg:grid-cols-[1.15fr_1fr] lg:gap-16">
-        <div className="relative aspect-[4/5] overflow-hidden rounded-3xl bg-surface lg:sticky lg:top-28 lg:self-start">
-          <StoreImage
-            src={product.image}
-            fallback={product.name}
-            fallbackClassName="text-[9rem]"
-            alt={product.name}
-            fill
-            priority
-            sizes="(min-width: 1024px) 50vw, 100vw"
-            className="object-cover"
-          />
-          {product.regular_price && (
-            <span className="eyebrow absolute left-5 top-5 rounded-full bg-ink px-3 py-1.5 text-[0.65rem] text-accent-light">On sale</span>
-          )}
-        </div>
+        <ProductGallery
+          images={photosOf(product)}
+          name={product.name}
+          badge={product.regular_price ? <span className="eyebrow absolute left-5 top-5 rounded-full bg-ink px-3 py-1.5 text-[0.65rem] text-accent-light">On sale</span> : undefined}
+        />
 
         <div className="lg:py-4">
           <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
@@ -211,7 +206,7 @@ export default async function ProductPage({ params }: PageProps<"/products/[slug
       {related.length > 0 && (
         <section aria-labelledby="related-heading" className="container-x pt-24">
           <SectionHeading id="related-heading" eyebrow="You may also like" title={LABELS.related} href={product.category ? categoryPath(product.category) : "/products"} />
-          <ProductGrid products={related.slice(0, 4)} currency={store.currency} />
+          <ProductGrid products={related.slice(0, THEME.ui.layout === "marketplace" ? 5 : 4)} currency={store.currency} />
         </section>
       )}
 
@@ -222,7 +217,7 @@ export default async function ProductPage({ params }: PageProps<"/products/[slug
           "@id": absoluteUrl(`${productPath(product)}#product`),
           name: product.name,
           url: absoluteUrl(productPath(product)),
-          image: product.image ? [product.image] : [absoluteUrl(BRAND.logo.ogImage.src)],
+          image: photosOf(product).length ? photosOf(product).map((p) => p.image) : [absoluteUrl(BRAND.logo.ogImage.src)],
           description: product.description ?? `${product.name} from ${BRAND.name}.`,
           sku: product.sku ?? String(product.id),
           category: product.category?.name,

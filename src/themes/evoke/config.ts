@@ -38,7 +38,7 @@ export const THEME = {
     themeColor: "#0e0d0b",
   },
   labels: { item: "piece", items: "pieces", collection: "Collection", collections: "Collections", bagStory: "Discover the new collection and find something you love.", catalogTitle: "Shop All Clothing Online", related: "Complete the look" },
-  ui: { pageHero: "dark" },
+  ui: { pageHero: "dark", layout: "boutique" },
   home: {
     ticker: ["New season collection", "Cash on delivery nationwide", "7-day easy exchange", "Quality checked", "Designed in Bangladesh"],
     collections: { eyebrow: "Explore", title: "Shop by collection" },

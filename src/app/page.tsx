@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ArtDivider, ArtFlow, ArtRings } from "@/components/banners/art";
 import { ArrowRightIcon, PlusIcon } from "@/components/icons";
 import { JsonLd } from "@/components/json-ld";
+import { MarketHome } from "@/components/market/home";
 import { SectionHeading } from "@/components/page-hero";
 import { ProductGrid } from "@/components/product-card";
 import { FAQS } from "@/content/pages";
@@ -34,6 +35,8 @@ function Highlighted({ title, word }: { title: string; word: string }) {
 
 export default async function HomePage() {
   const [store, home] = await Promise.all([getStore(), getHome()]);
+  if (THEME.ui.layout === "marketplace") return <MarketHome store={store} home={home} />;
+
   const featured = home.best_sellers.length ? home.best_sellers : home.new_arrivals;
   const newArrivals = home.new_arrivals.filter((p) => !featured.some((f) => f.id === p.id));
   const faqs = FAQS.flatMap((g) => g.items).slice(0, 4);

@@ -11,7 +11,7 @@
  * The active theme is chosen with NEXT_PUBLIC_THEME in .env and wired in at
  * build time (next.config.ts), so only its fonts, CSS and code are shipped.
  */
-import type { Currency, Product } from "@/lib/types";
+import type { Currency, Group, Product } from "@/lib/types";
 
 export type ImageAsset = { src: string; width: number; height: number };
 
@@ -65,6 +65,12 @@ export type ThemeConfig = {
   ui: {
     /** Banner style at the top of listing and help pages */
     pageHero: "dark" | "light";
+    /**
+     * Page layout. "boutique": airy editorial pages for a curated label.
+     * "marketplace": a dense shop front (search bar with categories, category
+     * sidebar beside the hero, deal and best-seller blocks, bordered cards).
+     */
+    layout: "boutique" | "marketplace";
   };
   home: {
     ticker: string[];
@@ -103,4 +109,7 @@ export type HeroProps = {
   featured: Product[];
   currency: Currency;
   phone: string | null;
+  deals?: Product[];
+  newArrivals?: Product[];
+  categories?: Group[];
 };
