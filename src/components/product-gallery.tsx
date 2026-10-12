@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { ProductImage } from "@/lib/types";
 import { StoreImage } from "./store-image";
 
@@ -10,6 +10,16 @@ import { StoreImage } from "./store-image";
  */
 export function ProductGallery({ images, name, badge }: { images: ProductImage[]; name: string; badge?: React.ReactNode }) {
   const [index, setIndex] = useState(0);
+
+  // A chosen variation (e.g. a color) with its own photo shows it
+  useEffect(() => {
+    const show = (e: Event) => {
+      const at = images.findIndex((img) => img.image === (e as CustomEvent<string>).detail);
+      if (at >= 0) setIndex(at);
+    };
+    window.addEventListener("product-photo", show);
+    return () => window.removeEventListener("product-photo", show);
+  }, [images]);
   const current = images[index] ?? null;
 
   return (

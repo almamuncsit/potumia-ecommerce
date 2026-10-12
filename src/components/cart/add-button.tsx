@@ -1,6 +1,8 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
+import { productPath } from "@/lib/urls";
 import type { Product } from "@/lib/types";
 import { BagIcon } from "../icons";
 import { cart } from "./cart-store";
@@ -8,6 +10,18 @@ import { cart } from "./cart-store";
 /** "Add to cart" on a product card: adds one and confirms in place */
 export function AddButton({ product }: { product: Product }) {
   const [added, setAdded] = useState(false);
+
+  // Color, size …: chosen on its page (when any of them is in stock)
+  if (product.has_variants && product.in_stock) {
+    return (
+      <Link
+        href={productPath(product)}
+        className="relative z-10 flex h-9 w-full items-center justify-center gap-2 rounded-lg border border-brand/25 bg-card text-xs font-semibold text-brand-strong transition hover:border-brand hover:bg-brand hover:text-white"
+      >
+        Choose options
+      </Link>
+    );
+  }
 
   if (!product.in_stock) {
     return (

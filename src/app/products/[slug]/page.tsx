@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound, permanentRedirect } from "next/navigation";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { AddToCart } from "@/components/cart/add-to-cart";
+import { VariantBuyBox } from "@/components/cart/variant-buy-box";
 import { CashIcon, ExchangeIcon, PlusIcon, RulerIcon, TruckIcon } from "@/components/icons";
 import { JsonLd } from "@/components/json-ld";
 import { SectionHeading } from "@/components/page-hero";
@@ -115,27 +116,34 @@ export default async function ProductPage({ params }: PageProps<"/products/[slug
           </div>
           <h1 className="font-display mt-3 text-4xl font-medium leading-[1.1] sm:text-5xl">{product.name}</h1>
 
-          <div className="mt-5">
-            <Price price={product.price} regular={product.regular_price} currency={store.currency} size="lg" />
-          </div>
-          <p className="mt-2 text-sm text-muted">{payment} available · Delivery charge confirmed with your order</p>
+          {product.variants?.length ? (
+            // Color, size …: the chosen variation sets price, stock and what goes in the bag
+            <VariantBuyBox product={product} currency={store.currency} payment={payment} />
+          ) : (
+            <>
+              <div className="mt-5">
+                <Price price={product.price} regular={product.regular_price} currency={store.currency} size="lg" />
+              </div>
+              <p className="mt-2 text-sm text-muted">{payment} available · Delivery charge confirmed with your order</p>
 
-          <p className={`mt-6 flex items-center gap-2 text-sm font-medium ${product.in_stock ? (lowStock ? "text-sale" : "text-ok") : "text-muted"}`}>
-            <span className={`h-2 w-2 rounded-full ${product.in_stock ? (lowStock ? "bg-sale" : "bg-ok") : "bg-muted"}`} />
-            {!product.in_stock ? "Sold out" : lowStock ? `Only ${Math.floor(product.stock)} left` : "In stock, ready to ship"}
-          </p>
+              <p className={`mt-6 flex items-center gap-2 text-sm font-medium ${product.in_stock ? (lowStock ? "text-sale" : "text-ok") : "text-muted"}`}>
+                <span className={`h-2 w-2 rounded-full ${product.in_stock ? (lowStock ? "bg-sale" : "bg-ok") : "bg-muted"}`} />
+                {!product.in_stock ? "Sold out" : lowStock ? `Only ${Math.floor(product.stock)} left` : "In stock, ready to ship"}
+              </p>
 
-          <div className="mt-6">
-            <AddToCart
-              product_id={product.id}
-              slug={product.slug}
-              name={product.name}
-              image={product.image ?? product.thumb}
-              price={product.price}
-              max={product.stock}
-              inStock={product.in_stock}
-            />
-          </div>
+              <div className="mt-6">
+                <AddToCart
+                  product_id={product.id}
+                  slug={product.slug}
+                  name={product.name}
+                  image={product.image ?? product.thumb}
+                  price={product.price}
+                  max={product.stock}
+                  inStock={product.in_stock}
+                />
+              </div>
+            </>
+          )}
 
           <ul className="mt-8 grid grid-cols-3 gap-3 border-y border-line py-6 text-center text-xs">
             <li className="space-y-2">
@@ -223,9 +231,16 @@ export default async function ProductPage({ params }: PageProps<"/products/[slug
           category: product.category?.name,
           brand: { "@type": "Brand", name: product.brand?.name ?? BRAND.name },
           offers: {
-            "@type": "Offer",
+            // Variations: the range of their prices
+            ...(product.variants?.length
+              ? {
+                  "@type": "AggregateOffer",
+                  lowPrice: Math.min(...product.variants.map((v) => v.price)).toFixed(2),
+                  highPrice: Math.max(...product.variants.map((v) => v.price)).toFixed(2),
+                  offerCount: product.variants.length,
+                }
+              : { "@type": "Offer", price: product.price.toFixed(2) }),
             url: absoluteUrl(productPath(product)),
-            price: product.price.toFixed(2),
             priceCurrency: store.currency.code,
             availability: product.in_stock ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
             itemCondition: "https://schema.org/NewCondition",

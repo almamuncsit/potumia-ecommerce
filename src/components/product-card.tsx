@@ -39,6 +39,7 @@ export function ProductCard({ product, currency, priority = false }: { product: 
           </Link>
         </h3>
         <div className="mt-1">
+          {product.price_from && <span className="mr-1.5 text-xs text-muted">From</span>}
           <Price price={product.price} regular={product.regular_price} currency={currency} />
         </div>
       </div>

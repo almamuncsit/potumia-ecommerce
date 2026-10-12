@@ -49,6 +49,29 @@ export type Product = {
   sold?: number;
   /** Added in the last 30 days */
   is_new?: boolean;
+  /** Has variations (color, size …): price is the lowest of theirs */
+  has_variants?: boolean;
+  /** Variations cost different amounts: show "From" */
+  price_from?: boolean;
+  /** Biggest saving among its variations, in % */
+  max_discount?: number | null;
+};
+
+/** An option of a product with variations, e.g. Color: Red, Blue */
+export type VariantOption = { name: string; values: string[] };
+
+/** One combination ("Red / L") with its own price and stock */
+export type ProductVariant = {
+  id: number;
+  label: string;
+  values: Record<string, string>;
+  sku: string | null;
+  price: number;
+  regular_price: number | null;
+  in_stock: boolean;
+  stock: number;
+  image: string | null;
+  thumb: string | null;
 };
 
 /** A product photo: the main one first, then the shop's extra photos */
@@ -59,6 +82,8 @@ export type ProductDetail = Product & {
   description: string | null;
   /** Every photo in order (older APIs leave it out) */
   images?: ProductImage[];
+  options?: VariantOption[];
+  variants?: ProductVariant[];
 };
 
 export type PageMeta = {

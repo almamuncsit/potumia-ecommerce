@@ -33,7 +33,9 @@ const TONES: Record<Slide["tone"], { bg: string; blob: string; eyebrow: string }
   rose: { bg: "bg-[#fdeef2]", blob: "bg-rose-200/60", eyebrow: "text-rose-600" },
 };
 
-const discountOf = (p: Product) => (p.regular_price ? Math.round(((p.regular_price - p.price) / p.regular_price) * 100) : 0);
+// For a product with variations: the biggest saving among them
+const discountOf = (p: Product) =>
+  p.has_variants ? p.max_discount ?? 0 : p.regular_price ? Math.round(((p.regular_price - p.price) / p.regular_price) * 100) : 0;
 
 /** Slides from the shop's own data: the best deal, what's new, the biggest categories */
 function slidesFor({ deals = [], newArrivals = [], categories = [], featured }: HeroProps): Slide[] {

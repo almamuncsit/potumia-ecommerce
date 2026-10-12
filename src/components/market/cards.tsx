@@ -10,7 +10,9 @@ import { StoreImage } from "../store-image";
  * real sales and stock numbers from the shop, and "Add to cart" on the card.
  */
 
-export const discountOf = (p: Product) => (p.regular_price ? Math.round(((p.regular_price - p.price) / p.regular_price) * 100) : 0);
+/** Saving in %; for a product with variations, the biggest among them */
+export const discountOf = (p: Product) =>
+  p.has_variants ? p.max_discount ?? 0 : p.regular_price ? Math.round(((p.regular_price - p.price) / p.regular_price) * 100) : 0;
 
 function Badges({ product }: { product: Product }) {
   const discount = discountOf(product);
@@ -18,7 +20,7 @@ function Badges({ product }: { product: Product }) {
 
   return (
     <span className="pointer-events-none absolute left-2.5 top-2.5 z-10 flex flex-col items-start gap-1">
-      {discount > 0 && <span className="rounded-md bg-hot px-2 py-0.5 text-[0.7rem] font-bold text-white">−{discount}%</span>}
+      {discount > 0 && <span className="rounded-md bg-hot px-2 py-0.5 text-[0.7rem] font-bold text-white">{product.has_variants ? "Up to " : ""}−{discount}%</span>}
       {product.is_new && <span className="rounded-md bg-brand px-2 py-0.5 text-[0.7rem] font-bold text-white">New</span>}
       {!product.in_stock && <span className="rounded-md bg-text/80 px-2 py-0.5 text-[0.7rem] font-bold text-white">Sold out</span>}
       {fewLeft && <span className="rounded-md bg-card px-2 py-0.5 text-[0.7rem] font-bold text-sale ring-1 ring-sale/30">Only {product.stock} left</span>}
@@ -29,6 +31,7 @@ function Badges({ product }: { product: Product }) {
 export function PriceLine({ product, currency, size = "md" }: { product: Product; currency: Currency; size?: "md" | "lg" }) {
   return (
     <span className="flex flex-wrap items-baseline gap-x-2">
+      {product.price_from && <span className="text-xs font-medium text-muted">From</span>}
       <span className={`font-bold ${size === "lg" ? "text-2xl" : "text-base"} ${product.regular_price ? "text-hot" : "text-brand-strong"}`}>
         <Money amount={product.price} currency={currency} />
       </span>
