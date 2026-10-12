@@ -11,7 +11,7 @@
  * The active theme is chosen with NEXT_PUBLIC_THEME in .env and wired in at
  * build time (next.config.ts), so only its fonts, CSS and code are shipped.
  */
-import type { Currency, Product } from "@/lib/types";
+import type { Currency, Group, Product } from "@/lib/types";
 
 export type ImageAsset = { src: string; width: number; height: number };
 
@@ -101,6 +101,9 @@ export type ThemeContent = {
 
 export type HeroProps = {
   featured: Product[];
+  deals: Product[];
+  newArrivals: Product[];
+  categories: Group[];
   currency: Currency;
   phone: string | null;
 };

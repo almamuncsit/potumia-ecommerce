@@ -1,15 +1,30 @@
 import Link from "next/link";
 import { productPath } from "@/lib/urls";
 import type { Currency, Product } from "@/lib/types";
+import { QuickAdd } from "./cart/quick-add";
 import { Price } from "./price";
 import { StoreImage } from "./store-image";
 
-export function ProductCard({ product, currency, priority = false }: { product: Product; currency: Currency; priority?: boolean }) {
-  const image = product.image ?? product.thumb;
+/** Honest signals only: real discounts, real stock, real sales */
+function Badges({ product }: { product: Product }) {
   const discount = product.regular_price ? Math.round(((product.regular_price - product.price) / product.regular_price) * 100) : 0;
+  const lowStock = product.in_stock && product.stock <= 5;
 
   return (
-    <article className="group relative flex flex-col">
+    <span className="pointer-events-none absolute left-3 top-3 z-10 flex flex-col items-start gap-1.5">
+      {discount > 0 && <span className="rounded-full bg-sale px-2.5 py-1 text-[0.68rem] font-semibold text-white shadow-sm">−{discount}%</span>}
+      {product.is_new && !discount && <span className="rounded-full bg-accent-strong px-2.5 py-1 text-[0.68rem] font-semibold text-white shadow-sm">New</span>}
+      {!product.in_stock && <span className="rounded-full bg-card/95 px-2.5 py-1 text-[0.68rem] font-semibold text-text shadow-sm">Sold out</span>}
+      {lowStock && <span className="rounded-full bg-card/95 px-2.5 py-1 text-[0.68rem] font-semibold text-sale shadow-sm">Only {Math.floor(product.stock)} left</span>}
+    </span>
+  );
+}
+
+export function ProductCard({ product, currency, priority = false }: { product: Product; currency: Currency; priority?: boolean }) {
+  const image = product.thumb ?? product.image;
+
+  return (
+    <article className="group relative flex h-full flex-col">
       <div className="relative aspect-[4/5] overflow-hidden rounded-2xl bg-surface">
         <StoreImage
           src={image}
@@ -17,18 +32,15 @@ export function ProductCard({ product, currency, priority = false }: { product: 
           alt={product.name}
           fill
           sizes="(min-width: 1280px) 19rem, (min-width: 768px) 30vw, 50vw"
-          className="object-cover transition duration-700 ease-out group-hover:scale-[1.05]"
+          className={`object-cover transition duration-700 ease-out group-hover:scale-[1.06] ${product.in_stock ? "" : "opacity-60 grayscale-[30%]"}`}
           priority={priority}
         />
-        <span className="absolute left-3 top-3 flex flex-col items-start gap-1.5">
-          {discount > 0 && <span className="rounded-full bg-ink px-2.5 py-1 text-[0.65rem] font-medium uppercase tracking-[0.14em] text-accent-light">−{discount}%</span>}
-          {!product.in_stock && <span className="rounded-full bg-card/90 px-2.5 py-1 text-[0.65rem] font-medium uppercase tracking-[0.14em] text-text">Sold out</span>}
-        </span>
-        <span aria-hidden="true" className="absolute inset-x-3 bottom-3 translate-y-3 rounded-full bg-card/95 py-2.5 text-center text-[0.7rem] font-medium uppercase tracking-[0.18em] opacity-0 shadow-lg backdrop-blur transition duration-300 group-hover:translate-y-0 group-hover:opacity-100">
-          View details
+        <Badges product={product} />
+        <span className="absolute bottom-3 right-3 z-20 translate-y-0 transition duration-300 sm:translate-y-2 sm:opacity-0 sm:group-hover:translate-y-0 sm:group-hover:opacity-100 sm:group-focus-within:translate-y-0 sm:group-focus-within:opacity-100">
+          <QuickAdd product={product} />
         </span>
       </div>
-      <div className="flex flex-1 flex-col gap-1 pt-4">
+      <div className="flex flex-1 flex-col gap-1 pt-3.5">
         {product.category && <p className="eyebrow text-[0.62rem] text-muted">{product.category.name}</p>}
         <h3 className="line-clamp-2 text-[0.95rem] leading-snug">
           {/* The link covers the whole card, so one link per product */}
@@ -36,8 +48,9 @@ export function ProductCard({ product, currency, priority = false }: { product: 
             {product.name}
           </Link>
         </h3>
-        <div className="mt-1">
+        <div className="mt-auto flex flex-wrap items-baseline justify-between gap-x-2 pt-1">
           <Price price={product.price} regular={product.regular_price} currency={currency} />
+          {product.sold > 0 && <span className="text-xs text-muted">{product.sold} sold</span>}
         </div>
       </div>
     </article>

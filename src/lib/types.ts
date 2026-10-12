@@ -24,6 +24,7 @@ export type Group = {
   slug: string;
   name: string;
   products?: number;
+  image?: string;
   description?: string;
   updated_at?: string;
 };
@@ -40,6 +41,10 @@ export type Product = {
   regular_price: number | null;
   in_stock: boolean;
   stock: number;
+  /** Quantity sold in the last 90 days */
+  sold: number;
+  /** Added in the last 30 days */
+  is_new: boolean;
   category: Group | null;
   brand: Group | null;
   updated_at: string | null;
@@ -62,6 +67,7 @@ export type ProductPage = { data: Product[]; meta: PageMeta };
 export type Home = {
   best_sellers: Product[];
   new_arrivals: Product[];
+  deals: Product[];
   categories: Group[];
 };
 
@@ -110,6 +116,7 @@ export type ProductFilters = {
   min_price?: number;
   max_price?: number;
   in_stock?: boolean;
+  on_sale?: boolean;
   sort?: "newest" | "popular" | "price_asc" | "price_desc" | "name_asc";
   page?: number;
   per_page?: number;
