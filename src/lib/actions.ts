@@ -134,6 +134,7 @@ export async function placeOrder(_: CheckoutState, form: FormData): Promise<Chec
         body: {
           client_ref: text(form, "client_ref"),
           payment_method: text(form, "payment_method") || "cod",
+          delivery_method_id: Number(text(form, "delivery_method_id")) || null,
           items,
           ...values,
           name: values.name || null,

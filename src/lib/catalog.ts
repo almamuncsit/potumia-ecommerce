@@ -1,7 +1,7 @@
 import "server-only";
 import { cacheLife, cacheTag } from "next/cache";
 import { api, ApiError } from "./api";
-import type { CatalogIndex, Group, Home, ProductDetail, ProductFilters, ProductPage, Product, Store } from "./types";
+import type { CatalogIndex, DeliveryMethod, Group, Home, ProductDetail, ProductFilters, ProductPage, Product, Store } from "./types";
 
 /**
  * Catalog reads, cached on the server so pages are prerendered and the API is
@@ -14,6 +14,14 @@ export async function getStore(): Promise<Store> {
   cacheLife("store");
   cacheTag("store");
   return (await api<{ data: Store }>("")).data;
+}
+
+/**
+ * Delivery methods for checkout, read fresh (not cached): the charge shown
+ * must be the one the shop adds to the order.
+ */
+export async function getDeliveryMethods(): Promise<DeliveryMethod[]> {
+  return (await api<{ data: Store }>("")).data.delivery_methods ?? [];
 }
 
 export async function getHome(): Promise<Home> {

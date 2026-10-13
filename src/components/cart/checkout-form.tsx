@@ -4,9 +4,9 @@ import Link from "next/link";
 import { useActionState, useState } from "react";
 import { placeOrder, type CheckoutState } from "@/lib/actions";
 import { formatMoney } from "@/lib/money";
-import type { Currency, Customer } from "@/lib/types";
+import { deliveryCharge, type Currency, type Customer, type DeliveryMethod } from "@/lib/types";
 import { Field } from "../form-field";
-import { CashIcon } from "../icons";
+import { CashIcon, TruckIcon } from "../icons";
 import { Money } from "../price";
 import { CartLines, EmptyBag, OrderPromises } from "./cart-view";
 import { useCart } from "./cart-store";
@@ -23,12 +23,17 @@ function Step({ n, title, children }: { n: number; title: string; children: Reac
   );
 }
 
-export function CheckoutForm({ currency, customer }: { currency: Currency; customer: Customer | null }) {
+export function CheckoutForm({ currency, customer, deliveryMethods = [] }: { currency: Currency; customer: Customer | null; deliveryMethods?: DeliveryMethod[] }) {
   const { lines, subtotal } = useCart();
   const [state, action, pending] = useActionState<CheckoutState, FormData>(placeOrder, {});
   // One key per checkout: a double click or retry records the order once
   const [clientRef] = useState(() => crypto.randomUUID());
   const values = state.values ?? {};
+  // The first delivery method is chosen to start with
+  const [deliveryId, setDeliveryId] = useState<number | null>(deliveryMethods[0]?.id ?? null);
+  const delivery = deliveryMethods.find((m) => m.id === deliveryId) ?? null;
+  const charge = deliveryCharge(delivery, subtotal);
+  const total = subtotal + charge;
 
   if (!lines.length) return <EmptyBag />;
 
@@ -59,7 +64,49 @@ export function CheckoutForm({ currency, customer }: { currency: Currency; custo
           <Field label="Note for us (optional)" name="notes" textarea defaultValue={values.notes} error={state.fields?.notes} />
         </Step>
 
-        <Step n={2} title="Payment">
+        {deliveryMethods.length > 0 && (
+          <Step n={2} title="Delivery">
+            <fieldset>
+              <legend className="sr-only">Delivery method</legend>
+              <div className="space-y-3">
+                {deliveryMethods.map((m) => {
+                  const cost = deliveryCharge(m, subtotal);
+                  const chosen = m.id === deliveryId;
+                  return (
+                    <label
+                      key={m.id}
+                      className={`flex cursor-pointer items-start gap-4 rounded-2xl border-2 p-4 transition ${chosen ? "border-accent bg-brand-soft" : "border-line hover:border-accent/60"}`}
+                    >
+                      <input
+                        type="radio"
+                        name="delivery_method_id"
+                        value={m.id}
+                        checked={chosen}
+                        onChange={() => setDeliveryId(m.id)}
+                        required
+                        className="mt-1 h-4 w-4 accent-[var(--accent-strong)]"
+                      />
+                      <TruckIcon className="mt-0.5 h-6 w-6 shrink-0 text-accent-strong" />
+                      <span className="min-w-0 flex-1">
+                        <span className="block font-medium">{m.name}</span>
+                        {(m.estimate || m.description) && <span className="block text-sm text-muted">{[m.estimate, m.description].filter(Boolean).join(" · ")}</span>}
+                        {m.free_over ? (
+                          <span className={`mt-1 block text-xs font-medium ${cost === 0 ? "text-ok" : "text-muted"}`}>
+                            {cost === 0 ? "Free delivery on this order" : `Free on orders over ${formatMoney(m.free_over, currency)}`}
+                          </span>
+                        ) : null}
+                      </span>
+                      <span className="shrink-0 font-semibold">{cost > 0 ? formatMoney(cost, currency) : "Free"}</span>
+                    </label>
+                  );
+                })}
+              </div>
+              {state.fields?.delivery_method_id && <p className="mt-2 text-sm text-danger">{state.fields.delivery_method_id}</p>}
+            </fieldset>
+          </Step>
+        )}
+
+        <Step n={deliveryMethods.length > 0 ? 3 : 2} title="Payment">
           <fieldset>
             <legend className="sr-only">Payment method</legend>
             {/* Only cash on delivery for now; more methods can be added here */}
@@ -81,11 +128,16 @@ export function CheckoutForm({ currency, customer }: { currency: Currency; custo
         <CartLines currency={currency} errors={state.cartErrors} editable={false} />
         <dl className="space-y-3 text-sm">
           <div className="flex justify-between"><dt className="text-muted">Subtotal</dt><dd className="font-medium">{formatMoney(subtotal, currency)}</dd></div>
-          <div className="flex justify-between"><dt className="text-muted">Delivery</dt><dd className="text-muted">Confirmed by phone</dd></div>
+          <div className="flex justify-between gap-3">
+            <dt className="text-muted">Delivery{delivery ? ` · ${delivery.name}` : ""}</dt>
+            <dd className={delivery ? "font-medium" : "text-muted"}>
+              {delivery ? (charge > 0 ? formatMoney(charge, currency) : "Free") : deliveryMethods.length ? "Choose an option" : "Confirmed by phone"}
+            </dd>
+          </div>
         </dl>
         <div className="flex items-baseline justify-between border-t border-line pt-4">
           <span className="font-medium">Total</span>
-          <span className="font-display text-3xl"><Money amount={subtotal} currency={currency} /></span>
+          <span className="font-display text-3xl"><Money amount={total} currency={currency} /></span>
         </div>
         {state.error && <p className="rounded-xl bg-danger/10 px-4 py-3 text-sm font-medium text-danger" role="alert">{state.error}</p>}
         <button type="submit" className="btn btn-primary w-full" disabled={pending}>

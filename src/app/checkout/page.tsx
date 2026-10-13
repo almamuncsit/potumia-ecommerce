@@ -2,14 +2,14 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import { CheckoutForm } from "@/components/cart/checkout-form";
 import { PageTitle } from "@/components/page-hero";
-import { getStore } from "@/lib/catalog";
+import { getDeliveryMethods, getStore } from "@/lib/catalog";
 import { getCustomer } from "@/lib/session";
 
 export const metadata: Metadata = { title: "Checkout", robots: { index: false, follow: false } };
 
 async function Checkout() {
-  const [store, customer] = await Promise.all([getStore(), getCustomer()]);
-  return <CheckoutForm currency={store.currency} customer={customer} />;
+  const [store, customer, deliveryMethods] = await Promise.all([getStore(), getCustomer(), getDeliveryMethods()]);
+  return <CheckoutForm currency={store.currency} customer={customer} deliveryMethods={deliveryMethods} />;
 }
 
 export default function Page() {

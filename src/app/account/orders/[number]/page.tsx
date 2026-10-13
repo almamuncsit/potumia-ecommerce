@@ -61,6 +61,15 @@ async function OrderDetails({ params }: { params: Promise<{ number: string }> })
       </ul>
 
       <dl className="ml-auto max-w-xs space-y-1.5 text-sm">
+        {order.delivery && (
+          <>
+            <div className="flex justify-between"><dt className="text-muted">Items</dt><dd>{formatMoney(order.items_total ?? order.total - order.delivery.charge, store.currency)}</dd></div>
+            <div className="flex justify-between">
+              <dt className="text-muted">Delivery · {order.delivery.name}</dt>
+              <dd>{order.delivery.charge > 0 ? formatMoney(order.delivery.charge, store.currency) : "Free"}</dd>
+            </div>
+          </>
+        )}
         <div className="flex justify-between"><dt className="text-muted">Total</dt><dd className="font-semibold">{formatMoney(order.total, store.currency)}</dd></div>
         <div className="flex justify-between"><dt className="text-muted">Paid</dt><dd>{formatMoney(order.paid, store.currency)}</dd></div>
         <div className="flex justify-between"><dt className="text-muted">Due</dt><dd>{formatMoney(order.due, store.currency)}</dd></div>

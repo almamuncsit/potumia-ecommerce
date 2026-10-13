@@ -24,7 +24,7 @@ const matches = (v: ProductVariant, chosen: Record<string, string | undefined>) 
  * the bag. Values with no stock are struck through; combinations the shop
  * doesn't make can't be picked.
  */
-export function VariantBuyBox({ product, currency, payment }: { product: ProductDetail; currency: Currency; payment: string }) {
+export function VariantBuyBox({ product, currency, payment, deliveryNote }: { product: ProductDetail; currency: Currency; payment: string; deliveryNote: string }) {
   const options = useMemo(() => product.options ?? [], [product.options]);
   const variants = useMemo(() => product.variants ?? [], [product.variants]);
 
@@ -67,7 +67,7 @@ export function VariantBuyBox({ product, currency, payment }: { product: Product
           </span>
         )}
       </div>
-      <p className="mt-2 text-sm text-muted">{payment} available · Delivery charge confirmed with your order</p>
+      <p className="mt-2 text-sm text-muted">{payment} available · {deliveryNote}</p>
 
       <div className="mt-6 space-y-5">
         {options.map((option) => {

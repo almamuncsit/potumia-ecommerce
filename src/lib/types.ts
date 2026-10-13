@@ -17,7 +17,24 @@ export type Store = {
   image: string | null;
   website_url: string | null;
   currency: Currency;
+  /** How orders can be delivered (Settings → Online store); none: no delivery charge */
+  delivery_methods?: DeliveryMethod[];
 };
+
+/** A way to deliver and its charge, e.g. Inside Dhaka 60 */
+export type DeliveryMethod = {
+  id: number;
+  name: string;
+  charge: number;
+  estimate: string | null;
+  description: string | null;
+  /** Orders whose items come to at least this are delivered free */
+  free_over: number | null;
+};
+
+/** The charge for a delivery method on an order of this many items' worth */
+export const deliveryCharge = (method: DeliveryMethod | null | undefined, itemsTotal: number) =>
+  !method ? 0 : method.free_over && itemsTotal >= method.free_over ? 0 : method.charge;
 
 export type Group = {
   id: number;
@@ -130,6 +147,9 @@ export type OrderSummary = {
 
 export type Order = OrderSummary & {
   notes: string | null;
+  /** Items before delivery */
+  items_total?: number;
+  delivery?: { name: string; charge: number } | null;
   items: {
     product_id: number | null;
     slug: string;

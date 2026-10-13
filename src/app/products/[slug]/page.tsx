@@ -87,6 +87,13 @@ export default async function ProductPage({ params }: PageProps<"/products/[slug
     { name: product.name, href: productPath(product) },
   ];
   const lowStock = product.in_stock && product.stock <= 5;
+  // "Delivery from ৳60" when the shop has delivery methods (Settings → Online store)
+  const charges = (store.delivery_methods ?? []).map((m) => m.charge);
+  const deliveryNote = !charges.length
+    ? "Delivery charge confirmed with your order"
+    : Math.min(...charges) > 0
+      ? `Delivery from ${formatMoney(Math.min(...charges), store.currency)}`
+      : "Free delivery available";
   const { payment, exchangeDays, deliveryDhaka, deliveryOutside } = BRAND.policies;
 
   return (
@@ -118,13 +125,13 @@ export default async function ProductPage({ params }: PageProps<"/products/[slug
 
           {product.variants?.length ? (
             // Color, size …: the chosen variation sets price, stock and what goes in the bag
-            <VariantBuyBox product={product} currency={store.currency} payment={payment} />
+            <VariantBuyBox product={product} currency={store.currency} payment={payment} deliveryNote={deliveryNote} />
           ) : (
             <>
               <div className="mt-5">
                 <Price price={product.price} regular={product.regular_price} currency={store.currency} size="lg" />
               </div>
-              <p className="mt-2 text-sm text-muted">{payment} available · Delivery charge confirmed with your order</p>
+              <p className="mt-2 text-sm text-muted">{payment} available · {deliveryNote}</p>
 
               <p className={`mt-6 flex items-center gap-2 text-sm font-medium ${product.in_stock ? (lowStock ? "text-sale" : "text-ok") : "text-muted"}`}>
                 <span className={`h-2 w-2 rounded-full ${product.in_stock ? (lowStock ? "bg-sale" : "bg-ok") : "bg-muted"}`} />
