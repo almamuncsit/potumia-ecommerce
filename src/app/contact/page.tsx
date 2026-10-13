@@ -1,32 +1,38 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { HelpNav } from "@/components/content-page";
-import { ClockIcon, MailIcon, PhoneIcon, PinIcon, WhatsAppIcon } from "@/components/icons";
+import { ClockIcon, MailIcon, PhoneIcon, PinIcon, SOCIAL_ICONS, WhatsAppIcon } from "@/components/icons";
 import { JsonLd } from "@/components/json-ld";
 import { PageHero } from "@/components/page-hero";
-import { BRAND, whatsappNumber } from "@/lib/brand";
 import { getStore } from "@/lib/catalog";
+import { getShopBrand } from "@/lib/site";
 import { absoluteUrl } from "@/lib/urls";
 
-const description = `Contact ${BRAND.name} by phone, WhatsApp or email for help with orders, delivery, sizing and exchanges. ${BRAND.hours.label}.`;
+export async function generateMetadata(): Promise<Metadata> {
+  const brand = await getShopBrand();
+  const description = `Contact ${brand.name} by phone, WhatsApp or email for help with orders, delivery, sizing and exchanges. ${brand.hours.label}.`;
 
-export const metadata: Metadata = {
-  title: { absolute: `Contact Us | ${BRAND.name}` },
-  description,
-  alternates: { canonical: "/contact" },
-  openGraph: { title: `Contact ${BRAND.name}`, description, url: "/contact" },
-};
+  return {
+    title: { absolute: `Contact Us | ${brand.name}` },
+    description,
+    alternates: { canonical: "/contact" },
+    openGraph: { title: `Contact ${brand.name}`, description, url: "/contact" },
+  };
+}
 
 type Method = { Icon: typeof PhoneIcon; title: string; value: string; href?: string; note: string; external?: boolean };
 
 export default async function ContactPage() {
-  const store = await getStore();
-  const whatsapp = whatsappNumber(store.phone);
+  const [store, brand] = await Promise.all([getStore(), getShopBrand()]);
+  const { whatsapp } = brand;
   const methods: Method[] = [];
   if (store.phone) methods.push({ Icon: PhoneIcon, title: "Call us", value: store.phone, href: `tel:${store.phone}`, note: "Fastest for questions about an order" });
   if (whatsapp) methods.push({ Icon: WhatsAppIcon, title: "WhatsApp", value: "Chat with us", href: `https://wa.me/${whatsapp}`, note: "Send photos and sizes easily", external: true });
   if (store.email) methods.push({ Icon: MailIcon, title: "Email", value: store.email, href: `mailto:${store.email}`, note: "We reply within one working day" });
   if (store.address) methods.push({ Icon: PinIcon, title: "Visit", value: store.address, note: "Please call ahead" });
+  for (const { label, href } of brand.socials) {
+    methods.push({ Icon: SOCIAL_ICONS[label], title: label, value: "Follow us", href, note: "News, offers and new arrivals", external: true });
+  }
 
   return (
     <>
@@ -72,7 +78,7 @@ export default async function ContactPage() {
             <ClockIcon className="mt-0.5 h-5 w-5 shrink-0 text-accent-strong" />
             <div>
               <h2 className="font-medium">Customer service hours</h2>
-              <p className="mt-1 text-muted">{BRAND.hours.label}. Messages sent outside these hours are answered the next working day.</p>
+              <p className="mt-1 text-muted">{brand.hours.label}. Messages sent outside these hours are answered the next working day.</p>
             </div>
           </div>
 
@@ -94,7 +100,7 @@ export default async function ContactPage() {
           "@context": "https://schema.org",
           "@type": "ContactPage",
           url: absoluteUrl("/contact"),
-          name: `Contact ${BRAND.name}`,
+          name: `Contact ${brand.name}`,
           mainEntity: {
             "@id": absoluteUrl("/#store"),
             contactPoint: {

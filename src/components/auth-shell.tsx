@@ -1,19 +1,26 @@
 import Image from "next/image";
-import { BRAND } from "@/lib/brand";
+import { getShopBrand } from "@/lib/site";
 import { ArtRings } from "./banners/art";
+import { BrandLogo } from "./brand-logo";
 
 const BENEFITS = ["Follow every order and its delivery", "Faster checkout with saved details", "Your order history in one place"];
 
 /** Login / register layout: brand panel beside the form */
-export function AuthShell({ title, lead, children }: { title: string; lead: string; children: React.ReactNode }) {
+export async function AuthShell({ title, lead, children }: { title: string; lead: string; children: React.ReactNode }) {
+  const brand = await getShopBrand();
+
   return (
     <div className="container-x py-10 lg:py-16">
       <div className="mx-auto grid max-w-5xl overflow-hidden rounded-3xl border border-line bg-card lg:grid-cols-2">
         <div className="relative isolate hidden flex-col justify-between overflow-hidden surface-ink p-12 text-on-ink lg:flex">
           <ArtRings id="auth" className="absolute -bottom-1/3 -right-1/3 -z-10 h-[120%] w-auto opacity-70" />
-          <Image src={BRAND.logo.feature.src} alt={BRAND.name} width={BRAND.logo.feature.width} height={BRAND.logo.feature.height} className="w-32" />
+          {brand.fromShop ? (
+            <BrandLogo brand={brand} tone="dark" size="lg" />
+          ) : (
+            <Image src={brand.logo.feature.src} alt={brand.name} width={brand.logo.feature.width} height={brand.logo.feature.height} className="w-32" />
+          )}
           <div>
-            <p className="font-display text-4xl leading-tight">Welcome to the world of {BRAND.name}</p>
+            <p className="font-display text-4xl leading-tight">Welcome to the world of {brand.name}</p>
             <ul className="mt-8 space-y-3 text-sm text-on-ink-muted">
               {BENEFITS.map((b) => (
                 <li key={b} className="flex items-center gap-3">

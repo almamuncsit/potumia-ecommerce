@@ -1,12 +1,13 @@
-import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
-import { BRAND, LABELS } from "@/lib/brand";
+import { LABELS } from "@/lib/brand";
 import { getCategories, getStore } from "@/lib/catalog";
+import { getShopBrand } from "@/lib/site";
 import { HELP, NAV } from "@/lib/nav";
 import { getCustomer } from "@/lib/session";
 import type { Group } from "@/lib/types";
 import { categoryPath } from "@/lib/urls";
+import { BrandLogo } from "../brand-logo";
 import { MobileMenu } from "../header-dialogs";
 import { ChevronDownIcon, MenuIcon, PhoneIcon, SearchIcon, UserIcon } from "../icons";
 import { CartButton } from "./cart-button";
@@ -61,7 +62,7 @@ function SearchForm({ categories, id }: { categories: Group[]; id: string }) {
 }
 
 export async function MarketHeader() {
-  const [store, categories] = await Promise.all([getStore(), getCategories()]);
+  const [store, categories, brand] = await Promise.all([getStore(), getCategories(), getShopBrand()]);
   const categoryLinks = categories.map((c) => ({ href: categoryPath(c), label: c.name }));
 
   return (
@@ -74,10 +75,14 @@ export async function MarketHeader() {
             <li className="px-3"><Link href="/contact" className="hover:text-brand-strong">Contact</Link></li>
             <li className="pl-3"><Link href="/account" className="hover:text-brand-strong">Track order</Link></li>
           </ul>
-          <p>
-            <strong className="font-semibold text-hot">{BRAND.policies.payment}</strong> all over {BRAND.country}
-            <span className="hidden lg:inline"> · {BRAND.policies.exchangeDays}-day easy exchange</span>
-          </p>
+          {brand.announcement ? (
+            <p className="truncate font-semibold text-hot">{brand.announcement}</p>
+          ) : (
+            <p>
+              <strong className="font-semibold text-hot">{brand.policies.payment}</strong> all over {brand.country}
+              <span className="hidden lg:inline"> · {brand.policies.exchangeDays}-day easy exchange</span>
+            </p>
+          )}
           {store.phone && (
             <a href={`tel:${store.phone}`} className="hidden items-center gap-1.5 md:flex">
               Need help? <strong className="font-semibold text-brand-strong">{store.phone}</strong>
@@ -88,9 +93,9 @@ export async function MarketHeader() {
 
       <header className="sticky top-0 z-40 border-b border-line bg-card/95 shadow-[0_6px_20px_-18px_rgb(15_23_42/0.5)] backdrop-blur">
         <div className="container-x flex h-16 items-center gap-3 lg:h-[4.5rem] lg:gap-8">
-          <MobileMenu links={NAV} categories={categoryLinks} help={HELP} />
-          <Link href="/" aria-label={`${BRAND.name} home`} className="shrink-0">
-            <Image src={BRAND.logo.onLight.src} alt={BRAND.name} width={BRAND.logo.onLight.width} height={BRAND.logo.onLight.height} priority className="h-8 w-auto lg:h-10" />
+          <MobileMenu links={NAV} categories={categoryLinks} help={HELP} logo={<BrandLogo brand={brand} size="sm" />} />
+          <Link href="/" aria-label={`${brand.name} home`} className="min-w-0 shrink">
+            <BrandLogo brand={brand} priority />
           </Link>
           <div className="hidden flex-1 lg:block">
             <SearchForm categories={categories} id="search-top" />

@@ -4,48 +4,63 @@ import { Header } from "@/components/header";
 import { JsonLd } from "@/components/json-ld";
 import { BRAND, THEME } from "@/lib/brand";
 import { getStore } from "@/lib/catalog";
+import { getShopBrand } from "@/lib/site";
 import { absoluteUrl, siteUrl } from "@/lib/urls";
 import { fontVariables } from "@theme/fonts";
 import "./globals.css";
 // The active theme's colours, fonts and button styles (after the shared styles)
 import "@theme/theme.css";
 
-const title = `${BRAND.name} | ${BRAND.tagline}`;
+export async function generateMetadata(): Promise<Metadata> {
+  const [brand, store] = await Promise.all([getShopBrand(), getStore()]);
+  const title = `${brand.name} | ${brand.tagline}`;
+  // Themes for any shop: the shop's logo as the icon, its photo (else logo) when shared
+  // Icon: the favicon from Store details, else the shop's logo (themes for any shop), else the theme's
+  const logo = brand.favicon ?? brand.shopLogo?.src;
+  // Link previews: the picture from Store details, else the shop's photo or logo, else the theme's
+  const share = brand.shareImage
+    ? { ...brand.shareImage, alt: brand.name }
+    : brand.fromShop && (store.image || brand.shopLogo)
+      ? { url: (store.image || brand.shopLogo?.src) as string, alt: brand.name }
+      : { ...brand.logo.ogImage, url: brand.logo.ogImage.src, alt: brand.name };
 
-export const metadata: Metadata = {
-  metadataBase: new URL(siteUrl),
-  title: { default: title, template: `%s | ${BRAND.name}` },
-  description: BRAND.description,
-  applicationName: BRAND.name,
-  keywords: BRAND.keywords,
-  alternates: {
-    canonical: "/",
-    // Plain-text summaries of the store for AI assistants
-    types: { "text/plain": [{ url: "/llms.txt", title: "LLM summary" }] },
-  },
-  openGraph: {
-    type: "website",
-    siteName: BRAND.name,
-    title,
-    description: BRAND.description,
-    url: "/",
-    locale: "en_BD",
-    images: [{ url: BRAND.logo.ogImage.src, width: BRAND.logo.ogImage.width, height: BRAND.logo.ogImage.height, alt: BRAND.name }],
-  },
-  twitter: { card: "summary_large_image", title, description: BRAND.description, images: [BRAND.logo.ogImage.src] },
-  robots: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1 },
-  icons: {
-    icon: [{ url: BRAND.logo.favicon, sizes: "any" }, { url: BRAND.logo.favicon64, type: "image/png", sizes: "64x64" }],
-    apple: BRAND.logo.appleTouch,
-  },
-};
+  return {
+    metadataBase: new URL(siteUrl),
+    title: { default: title, template: `%s | ${brand.name}` },
+    description: brand.description,
+    applicationName: brand.name,
+    keywords: brand.keywords,
+    alternates: {
+      canonical: "/",
+      // Plain-text summaries of the store for AI assistants
+      types: { "text/plain": [{ url: "/llms.txt", title: "LLM summary" }] },
+    },
+    openGraph: {
+      type: "website",
+      siteName: brand.name,
+      title,
+      description: brand.description,
+      url: "/",
+      locale: "en_BD",
+      images: [share],
+    },
+    twitter: { card: "summary_large_image", title, description: brand.description, images: [share.url] },
+    robots: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1 },
+    icons: logo
+      ? { icon: [{ url: logo }], apple: logo }
+      : {
+          icon: [{ url: brand.logo.favicon, sizes: "any" }, { url: brand.logo.favicon64, type: "image/png", sizes: "64x64" }],
+          apple: brand.logo.appleTouch,
+        },
+  };
+}
 
 export const viewport: Viewport = {
   themeColor: BRAND.themeColor,
 };
 
 async function SiteStructuredData() {
-  const store = await getStore();
+  const [store, brand] = await Promise.all([getStore(), getShopBrand()]);
 
   return (
     <JsonLd
@@ -54,23 +69,24 @@ async function SiteStructuredData() {
           "@context": "https://schema.org",
           "@type": "OnlineStore",
           "@id": absoluteUrl("/#store"),
-          name: BRAND.name,
+          name: brand.name,
           url: siteUrl,
-          description: BRAND.description,
-          logo: absoluteUrl(BRAND.logo.feature.src),
-          image: absoluteUrl(BRAND.logo.ogImage.src),
+          description: brand.description,
+          logo: brand.fromShop ? brand.shopLogo?.src : absoluteUrl(brand.logo.feature.src),
+          image: brand.fromShop ? store.image || brand.shopLogo?.src : absoluteUrl(brand.logo.ogImage.src),
           email: store.email ?? undefined,
           telephone: store.phone ?? undefined,
           address: store.address ? { "@type": "PostalAddress", streetAddress: store.address, addressCountry: "BD" } : undefined,
-          areaServed: { "@type": "Country", name: BRAND.country },
+          areaServed: { "@type": "Country", name: brand.country },
           currenciesAccepted: store.currency.code,
-          paymentAccepted: BRAND.policies.payment,
-          openingHours: BRAND.hours.schema,
+          paymentAccepted: brand.policies.payment,
+          openingHours: brand.hours.schema,
+          sameAs: brand.socials.length ? brand.socials.map((s) => s.href) : undefined,
           hasMerchantReturnPolicy: {
             "@type": "MerchantReturnPolicy",
             applicableCountry: "BD",
             returnPolicyCategory: "https://schema.org/MerchantReturnFiniteReturnWindow",
-            merchantReturnDays: BRAND.policies.exchangeDays,
+            merchantReturnDays: brand.policies.exchangeDays,
             url: absoluteUrl("/returns"),
           },
         },
@@ -78,7 +94,7 @@ async function SiteStructuredData() {
           "@context": "https://schema.org",
           "@type": "WebSite",
           "@id": absoluteUrl("/#website"),
-          name: BRAND.name,
+          name: brand.name,
           url: siteUrl,
           inLanguage: "en",
           publisher: { "@id": absoluteUrl("/#store") },

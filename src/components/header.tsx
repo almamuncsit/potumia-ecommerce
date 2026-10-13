@@ -1,11 +1,12 @@
-import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
-import { BRAND, LABELS, THEME } from "@/lib/brand";
+import { LABELS, THEME } from "@/lib/brand";
 import { getCategories, getStore } from "@/lib/catalog";
+import { getShopBrand } from "@/lib/site";
 import { HELP, NAV } from "@/lib/nav";
 import { getCustomer } from "@/lib/session";
 import { categoryPath } from "@/lib/urls";
+import { BrandLogo } from "./brand-logo";
 import { CartLink } from "./cart/cart-link";
 import { MobileMenu, SearchButton } from "./header-dialogs";
 import { ChevronDownIcon, UserIcon } from "./icons";
@@ -27,16 +28,20 @@ async function AccountLink() {
 }
 
 async function AnnouncementBar() {
-  const store = await getStore();
+  const [store, brand] = await Promise.all([getStore(), getShopBrand()]);
 
   return (
     <div className="bg-ink text-on-ink">
       <div className="container-x flex h-9 items-center justify-center gap-6 eyebrow !text-[0.7rem] sm:justify-between">
-        <p>
-          <span className="text-accent-light">{BRAND.policies.payment}</span> across {BRAND.country}
-          <span className="mx-3 hidden text-on-ink-muted md:inline">·</span>
-          <span className="hidden md:inline">{BRAND.policies.exchangeDays}-day easy exchange</span>
-        </p>
+        {brand.announcement ? (
+          <p className="truncate text-accent-light">{brand.announcement}</p>
+        ) : (
+          <p>
+            <span className="text-accent-light">{brand.policies.payment}</span> across {brand.country}
+            <span className="mx-3 hidden text-on-ink-muted md:inline">·</span>
+            <span className="hidden md:inline">{brand.policies.exchangeDays}-day easy exchange</span>
+          </p>
+        )}
         {store.phone && (
           <a href={`tel:${store.phone}`} className="hidden text-on-ink-muted hover:text-accent-light sm:inline">
             Call {store.phone}
@@ -50,7 +55,7 @@ async function AnnouncementBar() {
 export async function Header() {
   if (THEME.ui.layout === "marketplace") return <MarketHeader />;
 
-  const categories = await getCategories();
+  const [categories, brand] = await Promise.all([getCategories(), getShopBrand()]);
   const categoryLinks = categories.map((c) => ({ href: categoryPath(c), label: c.name }));
 
   return (
@@ -59,19 +64,12 @@ export async function Header() {
       <header className="sticky top-0 z-40 border-b border-line bg-bg/90 backdrop-blur-md">
         <div className="container-x flex h-16 items-center gap-2 lg:h-20">
           <div className="flex flex-1 items-center gap-1 lg:hidden">
-            <MobileMenu links={NAV} categories={categoryLinks} help={HELP} />
+            <MobileMenu links={NAV} categories={categoryLinks} help={HELP} logo={<BrandLogo brand={brand} size="sm" />} />
             <SearchButton />
           </div>
 
-          <Link href="/" aria-label={`${BRAND.name} home`} className="shrink-0">
-            <Image
-              src={BRAND.logo.onLight.src}
-              alt={BRAND.name}
-              width={BRAND.logo.onLight.width}
-              height={BRAND.logo.onLight.height}
-              priority
-              className="h-8 w-auto lg:h-10"
-            />
+          <Link href="/" aria-label={`${brand.name} home`} className="min-w-0 shrink-0">
+            <BrandLogo brand={brand} priority />
           </Link>
 
           <nav aria-label="Main" className="hidden flex-1 justify-center lg:flex">

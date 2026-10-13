@@ -3,7 +3,8 @@ import { cacheLife, cacheTag } from "next/cache";
 import { getBrands, getCategories, getProduct, getProducts, getStore } from "./catalog";
 import { formatMoney } from "./money";
 import { HAS_SIZE_GUIDE } from "@/content/pages";
-import { BRAND, THEME } from "./brand";
+import { THEME } from "./brand";
+import { getShopBrand, type SiteBrand } from "./site";
 import type { Product, Store } from "./types";
 import { absoluteUrl, brandPath, categoryPath, productPath, siteUrl } from "./urls";
 
@@ -26,19 +27,20 @@ async function allProducts(): Promise<Product[]> {
 
 const line = (text: string | null | undefined) => (text ?? "").replace(/\s+/g, " ").trim();
 
-function header(store: Store): string[] {
+function header(store: Store, BRAND: SiteBrand): string[] {
   const contact = [store.phone && `Phone: ${store.phone}`, store.email && `Email: ${store.email}`, store.address && `Address: ${line(store.address)}`]
     .filter(Boolean)
     .join(" · ");
 
   const { payment, exchangeDays, deliveryDhaka, deliveryOutside } = BRAND.policies;
+  const social = BRAND.socials.map((s) => `${s.label}: ${s.href}`).join(" · ");
 
   return [
     `# ${BRAND.name}`,
     "",
     `> ${BRAND.description}`,
     "",
-    `${BRAND.name} (${siteUrl}) is an online fashion store in ${BRAND.country}. Prices are in ${store.currency.code} (${store.currency.symbol}).`,
+    `${BRAND.name} (${siteUrl}) is an online store in ${BRAND.country}. Prices are in ${store.currency.code} (${store.currency.symbol}).`,
     "",
     "## Store policies",
     "",
@@ -47,6 +49,7 @@ function header(store: Store): string[] {
     `- Exchange: within ${exchangeDays} days of delivery, unworn with tags attached. Damaged or wrong items are replaced free.`,
     `- Customer service: ${BRAND.hours.label}.`,
     contact ? `- Contact: ${contact}` : "",
+    social ? `- Social: ${social}` : "",
   ].filter((l, i, all) => l !== "" || all[i - 1] !== "");
 }
 
@@ -62,10 +65,10 @@ export async function llmsTxt(): Promise<string> {
   cacheLife("catalog");
   cacheTag("products", "categories", "brands", "store");
 
-  const [store, categories, brands, products] = await Promise.all([getStore(), getCategories(), getBrands(), allProducts()]);
+  const [store, categories, brands, products, BRAND] = await Promise.all([getStore(), getCategories(), getBrands(), allProducts(), getShopBrand()]);
 
   return [
-    ...header(store),
+    ...header(store, BRAND),
     "",
     "## Pages",
     "",
@@ -96,11 +99,11 @@ export async function llmsFullTxt(): Promise<string> {
   cacheLife("catalog");
   cacheTag("products", "store");
 
-  const [store, products] = await Promise.all([getStore(), allProducts()]);
+  const [store, products, brand] = await Promise.all([getStore(), allProducts(), getShopBrand()]);
   const details = await Promise.all(products.map((p) => getProduct(p.id)));
 
   return [
-    ...header(store),
+    ...header(store, brand),
     "",
     "## Products",
     "",

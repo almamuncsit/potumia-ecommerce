@@ -3,8 +3,8 @@ import Link from "next/link";
 import { Suspense } from "react";
 import { ArtRings } from "@/components/banners/art";
 import { ClearCart } from "@/components/cart/clear-cart";
-import { BRAND } from "@/lib/brand";
 import { getStore } from "@/lib/catalog";
+import { getShopBrand } from "@/lib/site";
 import { formatMoney } from "@/lib/money";
 import { getCustomer } from "@/lib/session";
 
@@ -14,7 +14,7 @@ async function Confirmation({ searchParams }: { searchParams: Promise<Record<str
   const sp = await searchParams;
   const order = typeof sp.order === "string" ? sp.order : null;
   const total = Number(sp.total);
-  const [store, customer] = await Promise.all([getStore(), getCustomer()]);
+  const [store, customer, brand] = await Promise.all([getStore(), getCustomer(), getShopBrand()]);
 
   return (
     <div className="relative isolate mx-auto max-w-2xl overflow-hidden rounded-3xl surface-ink px-6 py-14 text-center text-on-ink sm:px-12">
@@ -32,7 +32,7 @@ async function Confirmation({ searchParams }: { searchParams: Promise<Record<str
         <p className="mt-2 text-on-ink-muted">Total {formatMoney(total, store.currency)}, payable in cash on delivery.</p>
       )}
       <p className="mx-auto mt-4 max-w-md text-sm text-on-ink-muted">
-        We&apos;ll call you shortly to confirm your order and delivery charge. Inside Dhaka, orders usually arrive in {BRAND.policies.deliveryDhaka}.
+        We&apos;ll call you shortly to confirm your order and delivery charge. Inside Dhaka, orders usually arrive in {brand.policies.deliveryDhaka}.
       </p>
       <div className="mt-8 flex flex-wrap justify-center gap-3">
         {customer && order ? <Link href={`/account/orders/${order}`} className="btn btn-accent">View order</Link> : null}

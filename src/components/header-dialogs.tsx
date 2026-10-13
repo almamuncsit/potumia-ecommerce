@@ -1,9 +1,8 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
-import { useRef } from "react";
-import { BRAND, LABELS } from "@/lib/brand";
+import { useRef, type ReactNode } from "react";
+import { LABELS } from "@/lib/brand";
 import { CloseIcon, MenuIcon, SearchIcon } from "./icons";
 
 /** Search in a dialog: a plain GET form to /products, so results are a normal page */
@@ -45,8 +44,8 @@ export function SearchButton() {
 
 type NavLink = { href: string; label: string };
 
-/** Slide-in menu for phones and tablets */
-export function MobileMenu({ links, categories, help }: { links: NavLink[]; categories: NavLink[]; help: NavLink[] }) {
+/** Slide-in menu for phones and tablets; `logo` is rendered by the server (BrandLogo) */
+export function MobileMenu({ links, categories, help, logo }: { links: NavLink[]; categories: NavLink[]; help: NavLink[]; logo: ReactNode }) {
   const ref = useRef<HTMLDialogElement>(null);
   const close = () => ref.current?.close();
 
@@ -63,7 +62,7 @@ export function MobileMenu({ links, categories, help }: { links: NavLink[]; cate
       >
         <div className="flex h-full flex-col">
           <div className="flex items-center justify-between border-b border-line px-5 py-4">
-            <Image src={BRAND.logo.onLight.src} alt={BRAND.name} width={BRAND.logo.onLight.width} height={BRAND.logo.onLight.height} className="h-7 w-auto" />
+            <span className="min-w-0">{logo}</span>
             <button type="button" onClick={close} aria-label="Close menu" className="grid h-10 w-10 place-items-center rounded-full hover:bg-surface">
               <CloseIcon />
             </button>

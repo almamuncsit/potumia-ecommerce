@@ -34,3 +34,29 @@ export const WhatsAppIcon = ({ className = "h-5 w-5" }: IconProps) => (
     <path d="M12 2.5A9.5 9.5 0 0 0 3.8 16.8L2.5 21.5l4.8-1.3A9.5 9.5 0 1 0 12 2.5Zm0 17.3c-1.5 0-2.9-.4-4.1-1.1l-.3-.2-2.8.8.8-2.8-.2-.3A7.8 7.8 0 1 1 12 19.8Zm4.3-5.8c-.2-.1-1.4-.7-1.6-.8-.2-.1-.4-.1-.5.1l-.7.9c-.1.2-.3.2-.5.1a6.4 6.4 0 0 1-3.2-2.8c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.7-1.7c-.2-.4-.4-.4-.5-.4h-.5c-.2 0-.4.1-.6.3-.2.2-.8.8-.8 1.9s.8 2.2.9 2.4c.1.2 1.6 2.5 4 3.5 1.5.6 2 .7 2.8.6.4-.1 1.4-.6 1.6-1.1.2-.6.2-1 .1-1.1l-.5-.2Z" />
   </svg>
 );
+
+/** Social networks, keyed by the label the shop's links use (Store details) */
+export const SOCIAL_ICONS = {
+  Facebook: (p: IconProps) => (
+    <svg aria-hidden="true" viewBox="0 0 24 24" className={p.className ?? "h-5 w-5"} fill="currentColor">
+      <path d="M13.5 21v-7h2.4l.4-3h-2.8V9.2c0-.9.3-1.4 1.5-1.4h1.4V5.1c-.3 0-1.1-.1-2.1-.1-2.1 0-3.6 1.3-3.6 3.7V11H8.3v3h2.4v7h2.8Z" />
+    </svg>
+  ),
+  Instagram: (p: IconProps) => (
+    <Svg {...p}>
+      <rect x="3.5" y="3.5" width="17" height="17" rx="5" />
+      <circle cx="12" cy="12" r="3.8" />
+      <path d="M17.2 6.8v.01" />
+    </Svg>
+  ),
+  YouTube: (p: IconProps) => (
+    <svg aria-hidden="true" viewBox="0 0 24 24" className={p.className ?? "h-5 w-5"} fill="currentColor">
+      <path d="M21.2 7.7a2.4 2.4 0 0 0-1.7-1.7C18 5.6 12 5.6 12 5.6s-6 0-7.5.4a2.4 2.4 0 0 0-1.7 1.7C2.4 9.2 2.4 12 2.4 12s0 2.8.4 4.3c.2.8.9 1.5 1.7 1.7 1.5.4 7.5.4 7.5.4s6 0 7.5-.4a2.4 2.4 0 0 0 1.7-1.7c.4-1.5.4-4.3.4-4.3s0-2.8-.4-4.3ZM10.1 14.9V9.1l5 2.9-5 2.9Z" />
+    </svg>
+  ),
+  TikTok: (p: IconProps) => (
+    <svg aria-hidden="true" viewBox="0 0 24 24" className={p.className ?? "h-5 w-5"} fill="currentColor">
+      <path d="M16.6 3h-3.2v12.2a2.6 2.6 0 1 1-1.8-2.5V9.4a5.8 5.8 0 1 0 5 5.8V9.1a7.4 7.4 0 0 0 4.1 1.3V7.2c-2.3 0-4-1.8-4.1-4.2Z" />
+    </svg>
+  ),
+};

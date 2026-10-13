@@ -1,10 +1,10 @@
 import { ContentPageView, contentMetadata } from "@/components/content-page";
-import { PAGES } from "@/content/pages";
+import { getPage } from "@/lib/site";
 
-const page = PAGES["shipping"];
+export async function generateMetadata() {
+  return contentMetadata((await getPage("shipping"))!);
+}
 
-export const metadata = contentMetadata(page);
-
-export default function Page() {
-  return <ContentPageView page={page} pageType="WebPage" />;
+export default async function Page() {
+  return <ContentPageView page={(await getPage("shipping"))!} pageType="WebPage" />;
 }

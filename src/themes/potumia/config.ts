@@ -12,12 +12,13 @@ export const THEME = {
   id: "potumia",
   brand: {
     name: "Potumia Shop",
+    fromShop: true,
     tagline: "Shop Online with Cash on Delivery in Bangladesh",
     description:
-      "Potumia Shop brings everyday products to your door at fair prices. Order online, pay with cash on delivery anywhere in Bangladesh, and exchange easily if something isn't right.",
+      "{name} brings everyday products to your door at fair prices. Order online, pay with cash on delivery anywhere in Bangladesh, and exchange easily if something isn't right.",
     domain: "potumia.com",
     country: "Bangladesh",
-    keywords: ["Potumia", "Potumia Shop", "online shopping Bangladesh", "cash on delivery", "buy online BD", "home delivery Bangladesh"],
+    keywords: ["{name}", "online shopping Bangladesh", "cash on delivery", "buy online BD", "home delivery Bangladesh"],
     logo: {
       onLight: { src: "/themes/potumia/logo.svg", width: 557, height: 158 },
       onDark: { src: "/themes/potumia/logo-dark.svg", width: 557, height: 158 },
@@ -49,7 +50,7 @@ export const THEME = {
   },
   ui: { pageHero: "light", layout: "marketplace" },
   home: {
-    ticker: ["Cash on delivery", "Delivery all over Bangladesh", "7-day easy exchange", "Genuine products"],
+    ticker: ["Cash on delivery", "Delivery all over Bangladesh", "{exchangeDays}-day easy exchange", "Genuine products"],
     collections: { eyebrow: "Browse", title: "Shop by category" },
     promoPrimary: {
       eyebrow: "Just in",
@@ -69,14 +70,14 @@ export const THEME = {
       eyebrow: "Why shop with us",
       title: "Everyday shopping, made simple",
       highlight: "made simple",
-      text: "Potumia Shop is run on Potumia, so the stock you see is the stock we have. Prices are clear, orders are confirmed by a real person, and you pay only when your parcel reaches you.",
+      text: "{name} is run on Potumia, so the stock you see is the stock we have. Prices are clear, orders are confirmed by a real person, and you pay only when your parcel reaches you.",
       cta: "About us",
     },
     seo: {
       eyebrow: "Online shopping in Bangladesh",
       title: "Everything you need, delivered to your door",
       paragraphs: [
-        "Potumia Shop is an online store for everyday products in Bangladesh. Browse by category, compare prices, check what's in stock and order in a few taps, from your phone or computer.",
+        "{name} is an online store for everyday products in Bangladesh. Browse by category, compare prices, check what's in stock and order in a few taps, from your phone or computer.",
       ],
     },
   },

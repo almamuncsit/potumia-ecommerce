@@ -40,7 +40,7 @@ export const THEME = {
   labels: { item: "piece", items: "pieces", collection: "Collection", collections: "Collections", bagStory: "Discover the new collection and find something you love.", catalogTitle: "Shop All Clothing Online", related: "Complete the look" },
   ui: { pageHero: "dark", layout: "boutique" },
   home: {
-    ticker: ["New season collection", "Cash on delivery nationwide", "7-day easy exchange", "Quality checked", "Designed in Bangladesh"],
+    ticker: ["New season collection", "Cash on delivery nationwide", "{exchangeDays}-day easy exchange", "Quality checked", "Designed in Bangladesh"],
     collections: { eyebrow: "Explore", title: "Shop by collection" },
     promoPrimary: { eyebrow: "Just landed", title: "New arrivals", text: "Fresh pieces for the season ahead, added every week.", cta: "Shop new in", href: "/products?sort=newest" },
     promoSecondary: { eyebrow: "The Evoke way", title: "Quality you can feel", text: "Considered fabrics, clean cuts, lasting wear.", cta: "Our story", href: "/about" },

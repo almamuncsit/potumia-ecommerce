@@ -6,8 +6,8 @@ import { THEME } from "./config";
  * guide). Policies come from THEME.brand.policies so they stay consistent.
  */
 
-const { name } = THEME.brand;
-const { exchangeDays, deliveryDhaka, deliveryOutside, payment } = THEME.brand.policies;
+// {name}, {exchangeDays}, {deliveryDhaka} and {deliveryOutside} are filled in with the shop's (lib/site.ts)
+const { payment } = THEME.brand.policies;
 
 const faqs: ThemeContent["faqs"] = [
   {
@@ -36,7 +36,7 @@ const faqs: ThemeContent["faqs"] = [
     items: [
       {
         q: "Where do you deliver?",
-        a: `Everywhere in Bangladesh. Orders inside Dhaka usually arrive in ${deliveryDhaka}, and orders outside Dhaka in ${deliveryOutside}.`,
+        a: `Everywhere in Bangladesh. Orders inside Dhaka usually arrive in {deliveryDhaka}, and orders outside Dhaka in {deliveryOutside}.`,
       },
       {
         q: "How much is the delivery charge?",
@@ -53,7 +53,7 @@ const faqs: ThemeContent["faqs"] = [
     items: [
       {
         q: "Can I exchange a product?",
-        a: `Yes, within ${exchangeDays} days of delivery, as long as it's unused, in its original packaging and with all accessories.`,
+        a: `Yes, within {exchangeDays} days of delivery, as long as it's unused, in its original packaging and with all accessories.`,
       },
       {
         q: "Can I check my order before paying?",
@@ -70,7 +70,7 @@ const faqs: ThemeContent["faqs"] = [
     items: [
       {
         q: "Is the stock on the website up to date?",
-        a: `Yes. ${name} runs on Potumia, the same system we use in the shop, so stock and prices update as products are sold and restocked.`,
+        a: `Yes. {name} runs on Potumia, the same system we use in the shop, so stock and prices update as products are sold and restocked.`,
       },
       {
         q: "Are your products genuine?",
@@ -84,15 +84,15 @@ const pages: ThemeContent["pages"] = {
   about: {
     slug: "about",
     title: "About us",
-    metaTitle: `About ${name} | Online Shopping in Bangladesh`,
-    description: `${name} is an online store for everyday products in Bangladesh, with cash on delivery, real-time stock and friendly support. Learn how we work.`,
-    eyebrow: `About ${name}`,
-    intro: `${name} makes everyday shopping simple: clear prices, honest stock, and delivery to your door. You pay only when your order arrives.`,
+    metaTitle: `About {name} | Online Shopping in Bangladesh`,
+    description: `{name} is an online store for everyday products in Bangladesh, with cash on delivery, real-time stock and friendly support. Learn how we work.`,
+    eyebrow: `About {name}`,
+    intro: `{name} makes everyday shopping simple: clear prices, honest stock, and delivery to your door. You pay only when your order arrives.`,
     sections: [
       {
         heading: "Who we are",
         body: [
-          `${name} is an online shop serving customers across Bangladesh. We stock the everyday products people need and deliver them quickly, with the care of a neighbourhood shop.`,
+          `{name} is an online shop serving customers across Bangladesh. We stock the everyday products people need and deliver them quickly, with the care of a neighbourhood shop.`,
         ],
       },
       {
@@ -106,7 +106,7 @@ const pages: ThemeContent["pages"] = {
         body: ["Shopping with us should be easy and worry-free:"],
         list: [
           `${payment} everywhere in Bangladesh: pay only when your order arrives.`,
-          `Easy exchanges within ${exchangeDays} days.`,
+          `Easy exchanges within {exchangeDays} days.`,
           "Every order checked before it's packed.",
           "Real people on the phone and WhatsApp when you need help.",
         ],
@@ -117,14 +117,14 @@ const pages: ThemeContent["pages"] = {
     slug: "shipping",
     title: "Shipping & delivery",
     metaTitle: "Shipping & Delivery in Bangladesh | Cash on Delivery",
-    description: `${name} delivers across Bangladesh with cash on delivery. Inside Dhaka in ${deliveryDhaka}, outside Dhaka in ${deliveryOutside}. See how delivery works.`,
+    description: `{name} delivers across Bangladesh with cash on delivery. Inside Dhaka in {deliveryDhaka}, outside Dhaka in {deliveryOutside}. See how delivery works.`,
     eyebrow: "Help",
     intro: "We deliver to every district in Bangladesh, and you pay in cash when your order arrives. Here's how it works.",
     sections: [
       {
         heading: "Delivery times",
         body: ["Times start from the day we confirm your order:"],
-        list: [`Inside Dhaka: ${deliveryDhaka}.`, `Outside Dhaka: ${deliveryOutside}.`, "Holidays and sales can add a little time. We'll tell you if your order will take longer."],
+        list: [`Inside Dhaka: {deliveryDhaka}.`, `Outside Dhaka: {deliveryOutside}.`, "Holidays and sales can add a little time. We'll tell you if your order will take longer."],
       },
       {
         heading: "Delivery charges",
@@ -147,14 +147,14 @@ const pages: ThemeContent["pages"] = {
   returns: {
     slug: "returns",
     title: "Returns & exchange",
-    metaTitle: `Easy ${exchangeDays}-Day Exchange & Returns Policy`,
-    description: `Exchange products from ${name} within ${exchangeDays} days of delivery. Read our exchange, returns and refund policy and how to start an exchange.`,
+    metaTitle: `Easy {exchangeDays}-Day Exchange & Returns Policy`,
+    description: `Exchange products from {name} within {exchangeDays} days of delivery. Read our exchange, returns and refund policy and how to start an exchange.`,
     eyebrow: "Help",
-    intro: `Something not right? Exchange it within ${exchangeDays} days of delivery. Here's everything you need to know.`,
+    intro: `Something not right? Exchange it within {exchangeDays} days of delivery. Here's everything you need to know.`,
     sections: [
       {
         heading: "Exchange policy",
-        body: [`You can exchange a product within ${exchangeDays} days of delivery, as long as it is:`],
+        body: [`You can exchange a product within {exchangeDays} days of delivery, as long as it is:`],
         list: ["Unused and in the same condition you received it.", "In its original packaging, with all accessories, manuals and tags."],
       },
       {
@@ -184,9 +184,9 @@ const pages: ThemeContent["pages"] = {
     slug: "privacy",
     title: "Privacy policy",
     metaTitle: "Privacy Policy",
-    description: `How ${name} collects, uses and protects your personal information when you shop with us.`,
+    description: `How {name} collects, uses and protects your personal information when you shop with us.`,
     eyebrow: "Legal",
-    intro: `This policy explains what information ${name} collects when you shop with us, why, and how we keep it safe.`,
+    intro: `This policy explains what information {name} collects when you shop with us, why, and how we keep it safe.`,
     updated: "2026-10-12",
     sections: [
       {
@@ -226,9 +226,9 @@ const pages: ThemeContent["pages"] = {
     slug: "terms",
     title: "Terms & conditions",
     metaTitle: "Terms & Conditions",
-    description: `The terms that apply when you browse and buy from ${name}.`,
+    description: `The terms that apply when you browse and buy from {name}.`,
     eyebrow: "Legal",
-    intro: `These terms apply when you use the ${name} website and place an order. Please read them before you shop.`,
+    intro: `These terms apply when you use the {name} website and place an order. Please read them before you shop.`,
     updated: "2026-10-12",
     sections: [
       {

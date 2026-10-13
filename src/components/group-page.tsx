@@ -5,7 +5,8 @@ import { Suspense } from "react";
 import { getBrand, getCategory } from "@/lib/catalog";
 import type { Group } from "@/lib/types";
 import { brandPath, categoryPath, parseIdSlug } from "@/lib/urls";
-import { BRAND, itemCount, LABELS } from "@/lib/brand";
+import { itemCount, LABELS } from "@/lib/brand";
+import { getShopBrand } from "@/lib/site";
 import { ArtFlow, ArtRings } from "./banners/art";
 import { ArrowRightIcon } from "./icons";
 import { PageHero } from "./page-hero";
@@ -34,7 +35,7 @@ export async function groupMetadata(kind: Kind, slug: string, searchParams: Prom
   const page = filters.page && filters.page > 1 ? filters.page : undefined;
   const description =
     group.description?.slice(0, 155) ??
-    `Shop ${group.name} at ${BRAND.name}: ${group.products ?? "all"} ${group.products === 1 ? "product" : "products"} with prices and stock.`;
+    `Shop ${group.name} at ${(await getShopBrand()).name}: ${group.products ?? "all"} ${group.products === 1 ? "product" : "products"} with prices and stock.`;
 
   return {
     title: page ? `${group.name} – page ${page}` : group.name,
@@ -51,7 +52,7 @@ async function Products({ kind, group, searchParams }: { kind: Kind; group: Grou
 }
 
 export async function GroupPage({ kind, slug, searchParams }: { kind: Kind; slug: string; searchParams: Promise<SearchParams> }) {
-  const found = await findGroup(kind, slug);
+  const [found, brand] = await Promise.all([findGroup(kind, slug), getShopBrand()]);
   if (!found) notFound();
   const { group, requestedSlug } = found;
   const { path, list, listName } = config[kind];
@@ -62,7 +63,7 @@ export async function GroupPage({ kind, slug, searchParams }: { kind: Kind; slug
       <PageHero
         title={group.name}
         eyebrow={kind === "category" ? LABELS.collection : "Brand"}
-        description={group.description ?? `${itemCount(group.products)} from ${BRAND.name}, with cash on delivery across ${BRAND.country}.`}
+        description={group.description ?? `${itemCount(group.products)} from ${brand.name}, with cash on delivery across ${brand.country}.`}
         crumbs={[{ name: listName, href: list }, { name: group.name, href: path(group) }]}
       />
       <div className="container-x py-12 lg:py-16">
@@ -75,7 +76,8 @@ export async function GroupPage({ kind, slug, searchParams }: { kind: Kind; slug
 }
 
 /** All categories / brands */
-export function GroupIndex({ kind, groups }: { kind: Kind; groups: Group[] }) {
+export async function GroupIndex({ kind, groups }: { kind: Kind; groups: Group[] }) {
+  const brand = await getShopBrand();
   const { path, listName } = config[kind];
   const isCategory = kind === "category";
 
@@ -84,7 +86,7 @@ export function GroupIndex({ kind, groups }: { kind: Kind; groups: Group[] }) {
       <PageHero
         title={listName}
         eyebrow="Explore"
-        description={isCategory ? `Browse ${BRAND.name} by ${LABELS.collection.toLowerCase()} and find exactly what you're looking for.` : "Shop the brands we carry."}
+        description={isCategory ? `Browse ${brand.name} by ${LABELS.collection.toLowerCase()} and find exactly what you're looking for.` : "Shop the brands we carry."}
         crumbs={[{ name: listName, href: config[kind].list }]}
       />
       <div className="container-x py-12 lg:py-16">

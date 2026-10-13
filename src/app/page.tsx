@@ -6,9 +6,9 @@ import { JsonLd } from "@/components/json-ld";
 import { MarketHome } from "@/components/market/home";
 import { SectionHeading } from "@/components/page-hero";
 import { ProductGrid } from "@/components/product-card";
-import { FAQS } from "@/content/pages";
-import { BRAND, itemCount, THEME } from "@/lib/brand";
+import { itemCount, THEME } from "@/lib/brand";
 import { getHome, getStore } from "@/lib/catalog";
+import { getShopBrand, getContent, getHomeCopy } from "@/lib/site";
 import { absoluteUrl, categoryPath, productPath } from "@/lib/urls";
 import { Hero } from "@theme/hero";
 
@@ -39,13 +39,15 @@ export default async function HomePage() {
 
   const featured = home.best_sellers.length ? home.best_sellers : home.new_arrivals;
   const newArrivals = home.new_arrivals.filter((p) => !featured.some((f) => f.id === p.id));
-  const faqs = FAQS.flatMap((g) => g.items).slice(0, 4);
-  const { collections, promoPrimary, promoSecondary, story, seo } = THEME.home;
-  const { payment, deliveryDhaka, deliveryOutside, exchangeDays } = BRAND.policies;
+  const [brand, homeCopy, content] = await Promise.all([getShopBrand(), getHomeCopy(), getContent()]);
+  const faqs = content.faqs.flatMap((g) => g.items).slice(0, 4);
+  const { collections, promoPrimary, promoSecondary, story, seo } = homeCopy;
+  const { payment, deliveryDhaka, deliveryOutside, exchangeDays } = brand.policies;
+  const shopLogo = brand.fromShop ? brand.shopLogo : null;
 
   return (
     <>
-      <Hero featured={featured} currency={store.currency} phone={store.phone} />
+      <Hero featured={featured} currency={store.currency} phone={store.phone} exchangeDays={exchangeDays} ticker={homeCopy.ticker} />
 
       {home.categories.length > 0 && (
         <section aria-labelledby="collections-heading" className="container-x pt-20 sm:pt-24">
@@ -86,7 +88,7 @@ export default async function HomePage() {
         <section aria-labelledby="featured-heading" className="container-x pt-20 sm:pt-24">
           <SectionHeading
             id="featured-heading"
-            eyebrow={home.best_sellers.length ? "Most loved" : `Shop ${BRAND.name}`}
+            eyebrow={home.best_sellers.length ? "Most loved" : `Shop ${brand.name}`}
             title={home.best_sellers.length ? "Best sellers" : `Our ${THEME.labels.items}`}
             href="/products?sort=popular"
           />
@@ -132,14 +134,24 @@ export default async function HomePage() {
         <div className="container-x grid items-center gap-12 py-20 md:grid-cols-2 lg:py-28">
           <div className="relative mx-auto aspect-square w-full max-w-md">
             <ArtRings id="story" className="absolute inset-0 h-full w-full" />
-            <Image
-              src={BRAND.logo.feature.src}
-              alt={`${BRAND.name} logo`}
-              width={BRAND.logo.feature.width}
-              height={BRAND.logo.feature.height}
-              sizes="(min-width: 768px) 22rem, 70vw"
-              className="absolute left-1/2 top-1/2 w-3/5 -translate-x-1/2 -translate-y-1/2 drop-shadow-[0_20px_50px_rgba(0,0,0,0.25)]"
-            />
+            {shopLogo ? (
+              <span className="absolute left-1/2 top-1/2 grid w-1/2 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-3xl bg-white p-6 shadow-[0_20px_50px_rgba(0,0,0,0.25)]">
+                <Image src={shopLogo.src} alt={`${brand.name} logo`} width={shopLogo.width} height={shopLogo.height} sizes="16rem" className="h-auto w-full object-contain" />
+              </span>
+            ) : brand.fromShop ? (
+              <span className="font-display absolute left-1/2 top-1/2 w-4/5 -translate-x-1/2 -translate-y-1/2 text-center text-5xl font-extrabold leading-tight drop-shadow-[0_10px_30px_rgba(0,0,0,0.25)]">
+                {brand.name}
+              </span>
+            ) : (
+              <Image
+                src={brand.logo.feature.src}
+                alt={`${brand.name} logo`}
+                width={brand.logo.feature.width}
+                height={brand.logo.feature.height}
+                sizes="(min-width: 768px) 22rem, 70vw"
+                className="absolute left-1/2 top-1/2 w-3/5 -translate-x-1/2 -translate-y-1/2 drop-shadow-[0_20px_50px_rgba(0,0,0,0.25)]"
+              />
+            )}
           </div>
           <div className="max-w-lg">
             <p className="eyebrow text-accent-light">{story.eyebrow}</p>
@@ -193,7 +205,7 @@ export default async function HomePage() {
         data={{
           "@context": "https://schema.org",
           "@type": "ItemList",
-          name: `${BRAND.name}: featured products`,
+          name: `${brand.name}: featured products`,
           itemListElement: featured.map((p, i) => ({ "@type": "ListItem", position: i + 1, url: absoluteUrl(productPath(p)), name: p.name })),
         }}
       />

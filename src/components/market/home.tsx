@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { FAQS } from "@/content/pages";
-import { BRAND, LABELS, THEME } from "@/lib/brand";
+import { LABELS } from "@/lib/brand";
+import { getShopBrand, getContent, getHomeCopy, type SiteBrand } from "@/lib/site";
 import type { Group, Home, Product, Store } from "@/lib/types";
 import { absoluteUrl, categoryPath, productPath } from "@/lib/urls";
 import { Hero } from "@theme/hero";
@@ -69,15 +69,15 @@ function PromoTiles({ categories, deals }: { categories: Group[]; deals: Product
   );
 }
 
-const FEATURES = [
-  { Icon: CashIcon, title: BRAND.policies.payment, text: "Pay when it arrives" },
-  { Icon: TruckIcon, title: "Fast delivery", text: `Dhaka in ${BRAND.policies.deliveryDhaka}` },
-  { Icon: ExchangeIcon, title: `${BRAND.policies.exchangeDays}-day exchange`, text: "No-hassle returns" },
-  { Icon: ShieldIcon, title: "Genuine products", text: "Checked before packing" },
-  { Icon: PhoneIcon, title: "Real support", text: "Call or WhatsApp us" },
-];
+function Features({ policies }: { policies: SiteBrand["policies"] }) {
+  const FEATURES = [
+    { Icon: CashIcon, title: policies.payment, text: "Pay when it arrives" },
+    { Icon: TruckIcon, title: "Fast delivery", text: `Dhaka: ${policies.deliveryDhaka}` },
+    { Icon: ExchangeIcon, title: `${policies.exchangeDays}-day exchange`, text: "No-hassle returns" },
+    { Icon: ShieldIcon, title: "Genuine products", text: "Checked before packing" },
+    { Icon: PhoneIcon, title: "Real support", text: "Call or WhatsApp us" },
+  ];
 
-function Features() {
   return (
     <section aria-label="Why shop with us" className="container-x pt-8">
       <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
@@ -207,10 +207,10 @@ function CollectionBanners({ categories, deals }: { categories: Group[]; deals: 
   );
 }
 
-function AboutAndFaq() {
-  const { seo } = THEME.home;
-  const { payment, deliveryDhaka, deliveryOutside, exchangeDays } = BRAND.policies;
-  const faqs = FAQS.flatMap((g) => g.items).slice(0, 4);
+async function AboutAndFaq({ policies }: { policies: SiteBrand["policies"] }) {
+  const [{ seo }, content] = await Promise.all([getHomeCopy(), getContent()]);
+  const { payment, deliveryDhaka, deliveryOutside, exchangeDays } = policies;
+  const faqs = content.faqs.flatMap((g) => g.items).slice(0, 4);
 
   return (
     <section aria-labelledby="about-shop-heading" className="container-x pt-14">
@@ -251,7 +251,8 @@ function AboutAndFaq() {
   );
 }
 
-export function MarketHome({ store, home }: { store: Store; home: Home }) {
+export async function MarketHome({ store, home }: { store: Store; home: Home }) {
+  const brand = await getShopBrand();
   const { deals, best_sellers: bestSellers, new_arrivals: newArrivals, categories } = home;
   // Biggest categories with a photo lead the tiles and banners
   const pictured = [...categories].filter((c) => c.image).sort((a, b) => (b.products ?? 0) - (a.products ?? 0));
@@ -261,7 +262,7 @@ export function MarketHome({ store, home }: { store: Store; home: Home }) {
     <>
       <Hero featured={bestSellers.length ? bestSellers : newArrivals} deals={deals} newArrivals={newArrivals} categories={categories} currency={store.currency} phone={store.phone} />
       <PromoTiles categories={pictured.slice(2, 5)} deals={deals} />
-      <Features />
+      <Features policies={brand.policies} />
       <Deals deals={deals} store={store} />
       <Categories categories={categories} />
       <TopSelling products={bestSellers} store={store} />
@@ -276,14 +277,14 @@ export function MarketHome({ store, home }: { store: Store; home: Home }) {
 
       {!listed.length && !deals.length && <p className="container-x pt-16 text-center text-muted">New {LABELS.items} are coming soon.</p>}
 
-      <AboutAndFaq />
+      <AboutAndFaq policies={brand.policies} />
 
       {listed.length > 0 && (
         <JsonLd
           data={{
             "@context": "https://schema.org",
             "@type": "ItemList",
-            name: `${BRAND.name}: featured products`,
+            name: `${brand.name}: featured products`,
             itemListElement: listed.map((p, i) => ({ "@type": "ListItem", position: i + 1, url: absoluteUrl(productPath(p)), name: p.name })),
           }}
         />

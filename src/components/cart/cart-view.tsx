@@ -66,17 +66,18 @@ export function EmptyBag() {
   );
 }
 
-export function OrderPromises() {
+/** `exchangeDays`: the shop's (Store details), from the server */
+export function OrderPromises({ exchangeDays = BRAND.policies.exchangeDays }: { exchangeDays?: number }) {
   return (
     <ul className="space-y-2.5 text-sm text-muted">
       <li className="flex items-center gap-3"><CashIcon className="h-4 w-4 text-accent-strong" /> {BRAND.policies.payment}</li>
       <li className="flex items-center gap-3"><TruckIcon className="h-4 w-4 text-accent-strong" /> Delivery across {BRAND.country}</li>
-      <li className="flex items-center gap-3"><ExchangeIcon className="h-4 w-4 text-accent-strong" /> {BRAND.policies.exchangeDays}-day easy exchange</li>
+      <li className="flex items-center gap-3"><ExchangeIcon className="h-4 w-4 text-accent-strong" /> {exchangeDays}-day easy exchange</li>
     </ul>
   );
 }
 
-export function CartPage({ currency }: { currency: Currency }) {
+export function CartPage({ currency, exchangeDays }: { currency: Currency; exchangeDays?: number }) {
   const { lines, count, subtotal } = useCart();
 
   if (!lines.length) return <EmptyBag />;
@@ -99,7 +100,7 @@ export function CartPage({ currency }: { currency: Currency }) {
           <span className="font-display text-3xl"><Money amount={subtotal} currency={currency} /></span>
         </div>
         <Link href="/checkout" className="btn btn-primary w-full">Checkout</Link>
-        <OrderPromises />
+        <OrderPromises exchangeDays={exchangeDays} />
       </aside>
     </div>
   );

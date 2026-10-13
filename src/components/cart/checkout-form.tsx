@@ -23,7 +23,17 @@ function Step({ n, title, children }: { n: number; title: string; children: Reac
   );
 }
 
-export function CheckoutForm({ currency, customer, deliveryMethods = [] }: { currency: Currency; customer: Customer | null; deliveryMethods?: DeliveryMethod[] }) {
+export function CheckoutForm({
+  currency,
+  customer,
+  deliveryMethods = [],
+  exchangeDays,
+}: {
+  currency: Currency;
+  customer: Customer | null;
+  deliveryMethods?: DeliveryMethod[];
+  exchangeDays?: number;
+}) {
   const { lines, subtotal } = useCart();
   const [state, action, pending] = useActionState<CheckoutState, FormData>(placeOrder, {});
   // One key per checkout: a double click or retry records the order once
@@ -144,7 +154,7 @@ export function CheckoutForm({ currency, customer, deliveryMethods = [] }: { cur
           {pending ? "Placing order…" : "Place order"}
         </button>
         <Link href="/cart" className="link-line block text-center text-xs uppercase tracking-[0.16em] text-muted">Edit bag</Link>
-        <OrderPromises />
+        <OrderPromises exchangeDays={exchangeDays} />
       </aside>
     </form>
   );

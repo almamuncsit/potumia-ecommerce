@@ -42,7 +42,7 @@ const SLIDES: Slide[] = [
     theme: "dark",
     eyebrow: "Shop with ease",
     title: "Cash on delivery, all over Bangladesh",
-    text: `Order online and pay when it reaches your door. Not quite right? Exchange it within ${THEME.brand.policies.exchangeDays} days.`,
+    text: `Order online and pay when it reaches your door. Not quite right? Exchange it within {exchangeDays} days.`,
     primary: { label: "Start shopping", href: "/products" },
     secondary: { label: "Delivery details", href: "/shipping" },
   },
@@ -83,7 +83,7 @@ function SlideArt({ slide, active }: { slide: Slide; active: boolean }) {
   );
 }
 
-function HeroSlider() {
+function HeroSlider({ exchangeDays }: { exchangeDays: number }) {
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
   const [reduced, setReduced] = useState(false);
@@ -145,7 +145,7 @@ function HeroSlider() {
                   <Heading className="font-display mt-4 text-[2.6rem] font-medium leading-[1.05] sm:text-6xl lg:text-7xl">
                     {slide.title}
                   </Heading>
-                  <p className={`mt-5 max-w-md text-base leading-relaxed sm:text-lg ${dark ? "text-on-ink-muted" : "text-muted"}`}>{slide.text}</p>
+                  <p className={`mt-5 max-w-md text-base leading-relaxed sm:text-lg ${dark ? "text-on-ink-muted" : "text-muted"}`}>{slide.text.replace("{exchangeDays}", String(exchangeDays))}</p>
                   <div className="mt-8 flex flex-wrap gap-3">
                     <Link href={slide.primary.href} className={`btn ${dark ? "btn-accent" : "btn-primary"}`}>
                       {slide.primary.label}
@@ -210,8 +210,8 @@ function HeroSlider() {
 }
 
 /** Gold ticker of the store's promises under the hero */
-function Ticker() {
-  const items = [...THEME.home.ticker, ...THEME.home.ticker];
+function Ticker({ ticker }: { ticker: string[] }) {
+  const items = [...ticker, ...ticker];
   return (
     <div className="overflow-hidden border-y border-accent/25 bg-ink py-4 text-on-ink" aria-hidden="true">
       <div className="flex w-max animate-[ticker_38s_linear_infinite] gap-12 whitespace-nowrap">
@@ -228,12 +228,11 @@ function Ticker() {
 }
 
 /** Evoke's home hero: full-width cross-fading banners and the gold ticker */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export function Hero(_props: HeroProps) {
+export function Hero({ exchangeDays = THEME.brand.policies.exchangeDays, ticker = THEME.home.ticker }: HeroProps) {
   return (
     <>
-      <HeroSlider />
-      <Ticker />
+      <HeroSlider exchangeDays={exchangeDays} />
+      <Ticker ticker={ticker} />
     </>
   );
 }

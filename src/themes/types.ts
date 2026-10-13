@@ -18,7 +18,13 @@ export type ImageAsset = { src: string; width: number; height: number };
 export type ThemeConfig = {
   id: string;
   brand: {
+    /** Name used when the shop's isn't (see fromShop) */
     name: string;
+    /**
+     * A theme for any shop: the name and logo come from the shop info in the
+     * inventory app, and the logos below are only the fallback for icons.
+     */
+    fromShop?: boolean;
     /** Shown in titles and search results */
     tagline: string;
     description: string;
@@ -109,6 +115,9 @@ export type HeroProps = {
   featured: Product[];
   currency: Currency;
   phone: string | null;
+  /** The shop's exchange window and ticker lines (Store details filled in) */
+  exchangeDays?: number;
+  ticker?: string[];
   deals?: Product[];
   newArrivals?: Product[];
   categories?: Group[];

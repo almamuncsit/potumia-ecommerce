@@ -11,7 +11,8 @@ import { Price } from "@/components/price";
 import { ProductGrid } from "@/components/product-card";
 import { ProductGallery } from "@/components/product-gallery";
 import { HAS_SIZE_GUIDE } from "@/content/pages";
-import { BRAND, LABELS, THEME } from "@/lib/brand";
+import { LABELS, THEME } from "@/lib/brand";
+import { getShopBrand } from "@/lib/site";
 import { getIndex, getProduct, getStore } from "@/lib/catalog";
 import { formatMoney } from "@/lib/money";
 import type { ProductDetail, ProductImage } from "@/lib/types";
@@ -44,11 +45,11 @@ export async function generateMetadata({ params }: PageProps<"/products/[slug]">
   if (!found) return { title: "Product not found", robots: { index: false } };
 
   const { product } = found;
-  const store = await getStore();
+  const [store, brand] = await Promise.all([getStore(), getShopBrand()]);
   const price = formatMoney(product.price, store.currency);
   const description =
     product.description?.slice(0, 155) ??
-    `Buy ${product.name} online at ${BRAND.name} for ${price}. ${product.in_stock ? "In stock" : "Currently sold out"}, cash on delivery across Bangladesh.`;
+    `Buy ${product.name} online at ${brand.name} for ${price}. ${product.in_stock ? "In stock" : "Currently sold out"}, cash on delivery across Bangladesh.`;
 
   return {
     title: product.name,
@@ -76,7 +77,7 @@ const photosOf = (product: ProductDetail): ProductImage[] =>
 
 export default async function ProductPage({ params }: PageProps<"/products/[slug]">) {
   const { slug } = await params;
-  const [{ product, related, requestedSlug }, store] = await Promise.all([load(slug), getStore()]);
+  const [{ product, related, requestedSlug }, store, brand] = await Promise.all([load(slug), getStore(), getShopBrand()]);
 
   // One URL per product: an old or mistyped name redirects to the current one
   if (requestedSlug !== product.slug) permanentRedirect(productPath(product));
@@ -94,7 +95,7 @@ export default async function ProductPage({ params }: PageProps<"/products/[slug
     : Math.min(...charges) > 0
       ? `Delivery from ${formatMoney(Math.min(...charges), store.currency)}`
       : "Free delivery available";
-  const { payment, exchangeDays, deliveryDhaka, deliveryOutside } = BRAND.policies;
+  const { payment, exchangeDays, deliveryDhaka, deliveryOutside } = brand.policies;
 
   return (
     <>
@@ -232,11 +233,11 @@ export default async function ProductPage({ params }: PageProps<"/products/[slug
           "@id": absoluteUrl(`${productPath(product)}#product`),
           name: product.name,
           url: absoluteUrl(productPath(product)),
-          image: photosOf(product).length ? photosOf(product).map((p) => p.image) : [absoluteUrl(BRAND.logo.ogImage.src)],
-          description: product.description ?? `${product.name} from ${BRAND.name}.`,
+          image: photosOf(product).length ? photosOf(product).map((p) => p.image) : [brand.shopLogo?.src ?? absoluteUrl(brand.logo.ogImage.src)],
+          description: product.description ?? `${product.name} from ${brand.name}.`,
           sku: product.sku ?? String(product.id),
           category: product.category?.name,
-          brand: { "@type": "Brand", name: product.brand?.name ?? BRAND.name },
+          brand: { "@type": "Brand", name: product.brand?.name ?? brand.name },
           offers: {
             // Variations: the range of their prices
             ...(product.variants?.length

@@ -14,12 +14,36 @@ export type Store = {
   email: string | null;
   phone: string | null;
   logo: string | null;
+  /** Logo size in pixels, when known */
+  logo_width?: number | null;
+  logo_height?: number | null;
   image: string | null;
   website_url: string | null;
   currency: Currency;
   /** How orders can be delivered (Settings → Online store); none: no delivery charge */
   delivery_methods?: DeliveryMethod[];
+  /** Store details (Settings → Online store); empty fields use the theme's */
+  profile?: StoreProfile;
 };
+
+export type StoreProfile = {
+  tagline?: string | null;
+  about?: string | null;
+  whatsapp?: string | null;
+  hours?: string | null;
+  delivery_dhaka?: string | null;
+  delivery_outside?: string | null;
+  exchange_days?: number | null;
+  announcement?: string | null;
+  facebook?: string | null;
+  instagram?: string | null;
+  youtube?: string | null;
+  tiktok?: string | null;
+  /** Images picked in the file manager; null: not set */
+  images?: Partial<Record<"logo" | "logo_dark" | "favicon" | "share_image", StoreImage | null>>;
+};
+
+export type StoreImage = { id: number; url: string; thumb: string; width: number | null; height: number | null };
 
 /** A way to deliver and its charge, e.g. Inside Dhaka 60 */
 export type DeliveryMethod = {

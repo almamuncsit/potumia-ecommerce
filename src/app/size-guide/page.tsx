@@ -1,14 +1,17 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ContentPageView, contentMetadata } from "@/components/content-page";
-import { PAGES, SIZE_CHART } from "@/content/pages";
+import { SIZE_CHART } from "@/content/pages";
+import { getPage } from "@/lib/site";
 
 /** Only themes that sell clothing have a size guide */
-const page = PAGES["size-guide"];
+export async function generateMetadata(): Promise<Metadata> {
+  const page = await getPage("size-guide");
+  return page ? contentMetadata(page) : { title: "Not found", robots: { index: false } };
+}
 
-export const metadata: Metadata = page ? contentMetadata(page) : { title: "Not found", robots: { index: false } };
-
-export default function Page() {
+export default async function Page() {
+  const page = await getPage("size-guide");
   if (!page) notFound();
 
   return (

@@ -3,12 +3,13 @@ import { ArrowRightIcon, ChevronDownIcon } from "@/components/icons";
 import { Slider } from "@/components/market/slider";
 import { Money } from "@/components/price";
 import { StoreImage } from "@/components/store-image";
+import { getShopBrand, type SiteBrand } from "@/lib/site";
 import type { Currency, Group, Product } from "@/lib/types";
 import { categoryPath, productPath } from "@/lib/urls";
 import type { HeroProps } from "../types";
 import { THEME } from "./config";
 
-const { brand, labels } = THEME;
+const { labels } = THEME;
 
 type Slide = {
   key: string;
@@ -38,7 +39,7 @@ const discountOf = (p: Product) =>
   p.has_variants ? p.max_discount ?? 0 : p.regular_price ? Math.round(((p.regular_price - p.price) / p.regular_price) * 100) : 0;
 
 /** Slides from the shop's own data: the best deal, what's new, the biggest categories */
-function slidesFor({ deals = [], newArrivals = [], categories = [], featured }: HeroProps): Slide[] {
+function slidesFor({ deals = [], newArrivals = [], categories = [], featured }: HeroProps, brand: SiteBrand): Slide[] {
   const slides: Slide[] = [];
   const best = Math.max(0, ...deals.map(discountOf));
 
@@ -194,8 +195,9 @@ function CategoryPanel({ categories }: { categories: Group[] }) {
  * Potumia's home hero, as a shop front: the category list beside sliding
  * banners built from the shop's own deals, new arrivals and categories.
  */
-export function Hero(props: HeroProps) {
-  const slides = slidesFor(props);
+export async function Hero(props: HeroProps) {
+  const brand = await getShopBrand();
+  const slides = slidesFor(props, brand);
   const categories = props.categories ?? [];
 
   return (

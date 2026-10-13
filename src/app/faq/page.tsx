@@ -3,20 +3,24 @@ import { HelpCard, HelpNav } from "@/components/content-page";
 import { PlusIcon } from "@/components/icons";
 import { JsonLd } from "@/components/json-ld";
 import { PageHero } from "@/components/page-hero";
-import { FAQS } from "@/content/pages";
-import { BRAND } from "@/lib/brand";
+import { getShopBrand, getContent } from "@/lib/site";
 import { absoluteUrl } from "@/lib/urls";
 
-const description = `Answers about ordering from ${BRAND.name}: cash on delivery, delivery times across Bangladesh, exchanges, sizing and tracking your order.`;
+export async function generateMetadata(): Promise<Metadata> {
+  const { name } = await getShopBrand();
+  const description = `Answers about ordering from ${name}: cash on delivery, delivery times across Bangladesh, exchanges, sizing and tracking your order.`;
 
-export const metadata: Metadata = {
-  title: { absolute: `FAQ: Orders, Delivery & Exchanges | ${BRAND.name}` },
-  description,
-  alternates: { canonical: "/faq" },
-  openGraph: { title: "Frequently asked questions", description, url: "/faq" },
-};
+  return {
+    title: { absolute: `FAQ: Orders, Delivery & Exchanges | ${name}` },
+    description,
+    alternates: { canonical: "/faq" },
+    openGraph: { title: "Frequently asked questions", description, url: "/faq" },
+  };
+}
 
-export default function FaqPage() {
+export default async function FaqPage() {
+  const FAQS = (await getContent()).faqs;
+
   return (
     <>
       <PageHero

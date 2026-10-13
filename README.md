@@ -24,7 +24,7 @@ The API needs the migration `2026_10_12_000001_create_ecommerce_customer_tables`
 npm run build && npm run start -- -p 3100
 ```
 
-`next build` calls the API to prerender product, category and brand pages, so the API must be reachable while building. Pages refresh in the background every 5 minutes (prices and stock) and every hour (shop name and logo); see `cacheLife` in `next.config.ts`. Checkout always checks live prices and stock with the shop, whatever a cached page showed.
+`next build` calls the API to prerender product, category and brand pages, so the API must be reachable while building. Pages refresh in the background every 5 minutes (prices and stock) and every hour (shop name and logo); see `cacheLife` in `next.config.ts`. When the shop saves its shop info, Store details or delivery methods, the inventory API calls `POST /api/revalidate` on each of the shop's websites (with the website's key), so those changes show on the next visit. Checkout always checks live prices and stock with the shop, whatever a cached page showed.
 
 ## Themes
 
@@ -49,6 +49,8 @@ Each theme is a folder in `src/themes/<name>/`:
 | `hero.tsx` | The home-page hero (`Hero`) |
 
 Logos and images live in `public/` (Evoke: `public/brand/`, Potumia: `public/themes/potumia/`). The shared pages and components are in `src/app` and `src/components`; they read the theme through `@/lib/brand` and `@/content/pages`, and the `@theme/*` imports that `next.config.ts` points at the active folder.
+
+**The shop's own brand:** a theme with `brand.fromShop: true` (Potumia) is for any shop: the store shows the shop's **name and logo** from Shop info in the inventory app (a wide logo on its own, a square one beside the name, the name with its initials when there is no logo). Every theme also takes the **Store details** the shop sets in the inventory app (Settings → Online store → Store details): tagline, about text, announcement bar, WhatsApp, opening hours, delivery times, exchange days, social links, and images from the file manager (a website logo and one for dark backgrounds in themes for any shop; the browser icon and link-preview picture in every theme); empty fields keep the theme's text or images. Theme copy writes `{name}`, `{exchangeDays}`, `{deliveryDhaka}`, `{deliveryOutside}` and `{hours}` where these belong, and `src/lib/site.ts` fills them in (`getShopBrand()`, `getContent()`, `getHomeCopy()`).
 
 **Adding a theme:** copy an existing folder to `src/themes/<new-name>/`, change its files (keep the same exports, which `src/themes/types.ts` checks), add its images under `public/`, and set `NEXT_PUBLIC_THEME=<new-name>`. **Review the policies in `config.ts` before launch**; they appear on the help pages, in banners and in structured data. Contact details and currency always come from the shop in the inventory app.
 

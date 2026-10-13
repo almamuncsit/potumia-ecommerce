@@ -8,7 +8,7 @@ import type { ThemeContent } from "@/themes/types";
 export type { ContentPage, Faq, Section } from "@/themes/types";
 
 /** Typed as the shared contract, so code works with every theme */
-const CONTENT: ThemeContent = ACTIVE_CONTENT;
+export const CONTENT: ThemeContent = ACTIVE_CONTENT;
 
 export const PAGES = CONTENT.pages;
 export const FAQS = CONTENT.faqs;

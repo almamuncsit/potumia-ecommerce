@@ -7,7 +7,8 @@ import { THEME } from "./config";
  * Policies come from THEME.brand.policies so they stay consistent.
  */
 
-const { exchangeDays, deliveryDhaka, deliveryOutside, payment } = THEME.brand.policies;
+// {name}, {exchangeDays}, {deliveryDhaka} and {deliveryOutside} are filled in with the shop's (lib/site.ts)
+const { payment } = THEME.brand.policies;
 
 const faqs: ThemeContent["faqs"] = [
   {
@@ -36,7 +37,7 @@ const faqs: ThemeContent["faqs"] = [
     items: [
       {
         q: "Do you deliver all over Bangladesh?",
-        a: `Yes. We deliver to every district. Orders inside Dhaka usually arrive in ${deliveryDhaka}, and orders outside Dhaka in ${deliveryOutside}.`,
+        a: `Yes. We deliver to every district. Orders inside Dhaka usually arrive in {deliveryDhaka}, and orders outside Dhaka in {deliveryOutside}.`,
       },
       {
         q: "How much is the delivery charge?",
@@ -53,7 +54,7 @@ const faqs: ThemeContent["faqs"] = [
     items: [
       {
         q: "What is your exchange policy?",
-        a: `You can exchange an item within ${exchangeDays} days of delivery for another size or style, as long as it's unworn, unwashed and has its tags attached.`,
+        a: `You can exchange an item within {exchangeDays} days of delivery for another size or style, as long as it's unworn, unwashed and has its tags attached.`,
       },
       {
         q: "Can I check the product before paying?",
@@ -109,7 +110,7 @@ const pages: ThemeContent["pages"] = {
         body: ["Shopping with Evoke should feel as good as wearing it. That's why we offer:"],
         list: [
           `${payment} everywhere in Bangladesh: pay only when your order arrives.`,
-          `Easy exchanges within ${exchangeDays} days if the size or style isn't right.`,
+          `Easy exchanges within {exchangeDays} days if the size or style isn't right.`,
           "Quality checks on every piece before it leaves us.",
           "Real people on the phone and WhatsApp when you need help.",
         ],
@@ -120,7 +121,7 @@ const pages: ThemeContent["pages"] = {
     slug: "shipping",
     title: "Shipping & delivery",
     metaTitle: "Shipping & Delivery in Bangladesh | Cash on Delivery",
-    description: `Evoke delivers across Bangladesh with cash on delivery. Inside Dhaka in ${deliveryDhaka}, outside Dhaka in ${deliveryOutside}. See how delivery works.`,
+    description: `Evoke delivers across Bangladesh with cash on delivery. Inside Dhaka in {deliveryDhaka}, outside Dhaka in {deliveryOutside}. See how delivery works.`,
     eyebrow: "Help",
     intro: `We deliver to every district in Bangladesh, and you pay in cash when your order arrives. Here's how delivery works.`,
     sections: [
@@ -128,8 +129,8 @@ const pages: ThemeContent["pages"] = {
         heading: "Delivery times",
         body: ["Delivery times start from the day we confirm your order:"],
         list: [
-          `Inside Dhaka: ${deliveryDhaka}.`,
-          `Outside Dhaka: ${deliveryOutside}.`,
+          `Inside Dhaka: {deliveryDhaka}.`,
+          `Outside Dhaka: {deliveryOutside}.`,
           "During sales, holidays and Eid, deliveries can take a little longer. We'll let you know if yours will.",
         ],
       },
@@ -162,14 +163,14 @@ const pages: ThemeContent["pages"] = {
   returns: {
     slug: "returns",
     title: "Returns & exchange",
-    metaTitle: `Easy ${exchangeDays}-Day Exchange & Returns Policy`,
-    description: `Exchange Evoke items within ${exchangeDays} days of delivery. Read our exchange, returns and refund policy, and how to start an exchange.`,
+    metaTitle: `Easy {exchangeDays}-Day Exchange & Returns Policy`,
+    description: `Exchange Evoke items within {exchangeDays} days of delivery. Read our exchange, returns and refund policy, and how to start an exchange.`,
     eyebrow: "Help",
-    intro: `Not the right size or style? Exchange it within ${exchangeDays} days of delivery. Here's everything you need to know.`,
+    intro: `Not the right size or style? Exchange it within {exchangeDays} days of delivery. Here's everything you need to know.`,
     sections: [
       {
         heading: "Exchange policy",
-        body: [`You can exchange any item within ${exchangeDays} days of delivery for a different size, colour or style, as long as it is:`],
+        body: [`You can exchange any item within {exchangeDays} days of delivery for a different size, colour or style, as long as it is:`],
         list: ["Unworn, unwashed and unaltered.", "In its original condition with all tags attached.", "Returned with its original packaging where possible."],
       },
       {

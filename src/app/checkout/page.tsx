@@ -4,12 +4,13 @@ import { CheckoutForm } from "@/components/cart/checkout-form";
 import { PageTitle } from "@/components/page-hero";
 import { getDeliveryMethods, getStore } from "@/lib/catalog";
 import { getCustomer } from "@/lib/session";
+import { getShopBrand } from "@/lib/site";
 
 export const metadata: Metadata = { title: "Checkout", robots: { index: false, follow: false } };
 
 async function Checkout() {
-  const [store, customer, deliveryMethods] = await Promise.all([getStore(), getCustomer(), getDeliveryMethods()]);
-  return <CheckoutForm currency={store.currency} customer={customer} deliveryMethods={deliveryMethods} />;
+  const [store, customer, deliveryMethods, brand] = await Promise.all([getStore(), getCustomer(), getDeliveryMethods(), getShopBrand()]);
+  return <CheckoutForm currency={store.currency} customer={customer} deliveryMethods={deliveryMethods} exchangeDays={brand.policies.exchangeDays} />;
 }
 
 export default function Page() {

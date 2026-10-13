@@ -113,6 +113,12 @@ body {
   color: transparent;
 }
 
+/* The shop's initials when it has no logo (themes for any shop: BrandLogo) */
+.brand-mark {
+  background: var(--btn-primary-bg, var(--accent-gradient));
+  box-shadow: 0 6px 16px -8px rgb(15 23 42 / 0.45);
+}
+
 /* Dark feature sections (story band, promo card, page banners in dark themes) */
 .surface-ink {
   background: var(--ink-glow);

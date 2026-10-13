@@ -1,17 +1,18 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import type { ContentPage } from "@/content/pages";
-import { BRAND, whatsappNumber } from "@/lib/brand";
 import { getStore } from "@/lib/catalog";
+import { getShopBrand } from "@/lib/site";
 import { HELP } from "@/lib/nav";
 import { absoluteUrl } from "@/lib/urls";
 import { PhoneIcon, WhatsAppIcon } from "./icons";
 import { JsonLd } from "./json-ld";
 import { PageHero } from "./page-hero";
 
-export function contentMetadata(page: ContentPage): Metadata {
+export async function contentMetadata(page: ContentPage): Promise<Metadata> {
+  const { name } = await getShopBrand();
   return {
-    title: { absolute: `${page.metaTitle} | ${BRAND.name}` },
+    title: { absolute: `${page.metaTitle} | ${name}` },
     description: page.description,
     alternates: { canonical: `/${page.slug}` },
     openGraph: { title: page.metaTitle, description: page.description, url: `/${page.slug}` },
@@ -20,14 +21,14 @@ export function contentMetadata(page: ContentPage): Metadata {
 
 /** Help card with the shop's phone and WhatsApp */
 export async function HelpCard() {
-  const store = await getStore();
-  const whatsapp = whatsappNumber(store.phone);
+  const [store, brand] = await Promise.all([getStore(), getShopBrand()]);
+  const { whatsapp } = brand;
 
   return (
     <div className="rounded-2xl bg-ink p-6 text-on-ink">
       <p className="eyebrow text-accent-light">Need a hand?</p>
       <p className="font-display mt-2 text-2xl">We&apos;re here to help</p>
-      <p className="mt-2 text-sm text-on-ink-muted">{BRAND.hours.label}</p>
+      <p className="mt-2 text-sm text-on-ink-muted">{brand.hours.label}</p>
       <div className="mt-5 space-y-2">
         {store.phone && (
           <a href={`tel:${store.phone}`} className="flex items-center gap-3 rounded-xl border border-white/15 px-4 py-3 text-sm hover:border-accent-light">
