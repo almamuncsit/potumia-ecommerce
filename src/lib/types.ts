@@ -174,6 +174,8 @@ export type Order = OrderSummary & {
   /** Items before delivery */
   items_total?: number;
   delivery?: { name: string; charge: number } | null;
+  /** The coupon used and what it took off */
+  coupon?: { code: string; discount: number } | null;
   items: {
     product_id: number | null;
     slug: string;
@@ -184,6 +186,27 @@ export type Order = OrderSummary & {
     total: number;
   }[];
 };
+
+/** A coupon checked at checkout (Online store → Coupons in the inventory app) */
+export type Coupon = {
+  code: string;
+  label: string;
+  description: string | null;
+  type: "fixed" | "percentage";
+  value: number;
+  max_discount: number | null;
+  min_order: number | null;
+  items_total: number;
+  discount: number;
+};
+
+/** What a coupon takes off items worth this much (the shop checks it again with the order) */
+export function couponDiscount(coupon: Coupon | null, itemsTotal: number): number {
+  if (!coupon || (coupon.min_order && itemsTotal < coupon.min_order)) return 0;
+  let off = coupon.type === "percentage" ? (itemsTotal * coupon.value) / 100 : coupon.value;
+  if (coupon.type === "percentage" && coupon.max_discount) off = Math.min(off, coupon.max_discount);
+  return Math.round(Math.max(0, Math.min(off, itemsTotal)) * 100) / 100;
+}
 
 export type ProductFilters = {
   q?: string;

@@ -61,14 +61,23 @@ async function OrderDetails({ params }: { params: Promise<{ number: string }> })
       </ul>
 
       <dl className="ml-auto max-w-xs space-y-1.5 text-sm">
+        {(order.delivery || order.coupon) && (
+          <div className="flex justify-between">
+            <dt className="text-muted">Items</dt>
+            <dd>{formatMoney(order.items_total ?? order.total - (order.delivery?.charge ?? 0) + (order.coupon?.discount ?? 0), store.currency)}</dd>
+          </div>
+        )}
+        {order.coupon && (
+          <div className="flex justify-between text-ok">
+            <dt>Coupon · {order.coupon.code}</dt>
+            <dd>−{formatMoney(order.coupon.discount, store.currency)}</dd>
+          </div>
+        )}
         {order.delivery && (
-          <>
-            <div className="flex justify-between"><dt className="text-muted">Items</dt><dd>{formatMoney(order.items_total ?? order.total - order.delivery.charge, store.currency)}</dd></div>
-            <div className="flex justify-between">
-              <dt className="text-muted">Delivery · {order.delivery.name}</dt>
-              <dd>{order.delivery.charge > 0 ? formatMoney(order.delivery.charge, store.currency) : "Free"}</dd>
-            </div>
-          </>
+          <div className="flex justify-between">
+            <dt className="text-muted">Delivery · {order.delivery.name}</dt>
+            <dd>{order.delivery.charge > 0 ? formatMoney(order.delivery.charge, store.currency) : "Free"}</dd>
+          </div>
         )}
         <div className="flex justify-between"><dt className="text-muted">Total</dt><dd className="font-semibold">{formatMoney(order.total, store.currency)}</dd></div>
         <div className="flex justify-between"><dt className="text-muted">Paid</dt><dd>{formatMoney(order.paid, store.currency)}</dd></div>

@@ -3,7 +3,7 @@
 import { redirect } from "next/navigation";
 import { api, ApiError, fieldErrors } from "./api";
 import { clearSession, getToken, setSession } from "./session";
-import type { Customer, Order } from "./types";
+import type { Coupon, Customer, Order } from "./types";
 
 export type FormState = {
   error?: string;
@@ -104,6 +104,29 @@ export async function changePassword(_: FormState, form: FormData): Promise<Form
 
 export type CheckoutState = FormState & { cartErrors?: Record<number, string> };
 
+/** Checkout: what a coupon code takes off these items, or why it can't be used */
+export async function checkCoupon(
+  code: string,
+  items: { product_id: number; quantity: number }[],
+  mobile?: string,
+): Promise<{ coupon?: Coupon; error?: string }> {
+  if (!code.trim()) return { error: "Enter a coupon code." };
+  try {
+    const res = await api<{ data: Coupon }>("/coupon", {
+      method: "POST",
+      token: await getToken(),
+      body: { code: code.trim(), items, mobile: mobile?.trim() || null },
+    });
+    return { coupon: res.data };
+  } catch (error) {
+    if (error instanceof ApiError && (error.status === 422 || error.status === 429)) {
+      return { error: fieldErrors(error).coupon_code ?? error.message };
+    }
+    console.error(error);
+    return { error: "Couldn't check the coupon. Please try again." };
+  }
+}
+
 /**
  * Place the order. The cart sends only product ids and quantities: prices and
  * stock are checked by the shop. client_ref makes a resubmission (double
@@ -135,6 +158,7 @@ export async function placeOrder(_: CheckoutState, form: FormData): Promise<Chec
           client_ref: text(form, "client_ref"),
           payment_method: text(form, "payment_method") || "cod",
           delivery_method_id: Number(text(form, "delivery_method_id")) || null,
+          coupon_code: text(form, "coupon_code") || null,
           items,
           ...values,
           name: values.name || null,
